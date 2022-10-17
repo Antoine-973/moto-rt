@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+  nodejs:
+    image: node:lts-alpine
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./api:/home/node/api
+#      - /home/node/api/node_modules
+    working_dir: /home/node/api
+    container_name: portfolio-api
+    command: sh -c "npm install && npm run dev"
+
+  vue:
+    image: node:lts-alpine
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./front:/home/node/front
+#      - /home/node/front/node_modules
+    working_dir: /home/node/front
+    container_name: portfolio-front
+    command: sh -c "npm install && npm run dev"
