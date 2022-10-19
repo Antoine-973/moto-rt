@@ -1,14 +1,23 @@
-version: '3.7'
+version: '3.8'
 services:
+
   nodejs:
     image: node:lts-alpine
+    depends_on:
+      - mongo
+      - postgres
     ports:
       - "8080:8080"
     volumes:
       - ./api:/home/node/api
 #      - /home/node/api/node_modules
     working_dir: /home/node/api
-    container_name: portfolio-api
+    environment:
+      - PORT=4000
+      - MONGO_URL=mongodb://root:password@mongo:27017/app?authSource=admin
+      - DATABASE_URL=postgres://root:password@db/app
+      - JWT_SECRET=secret
+    container_name: moto-rc-api
     command: sh -c "npm install && npm run dev"
 
   vue:
@@ -19,5 +28,36 @@ services:
       - ./front:/home/node/front
 #      - /home/node/front/node_modules
     working_dir: /home/node/front
-    container_name: portfolio-front
+    container_name: moto-rc-front
+    environment:
+      - PORT=3000
     command: sh -c "npm install && npm run dev"
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo-data:/data/db
+    working_dir: /usr/local/sampleCollections
+
+  postgres:
+    image: postgres:14-alpine
+    restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=app
+    ports:
+      - target: 5432
+        published: 5432
+        protocol: tcp
+
+volumes:
+  mongo-data: { }
+  postgres-data: { }
