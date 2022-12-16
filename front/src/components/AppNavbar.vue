@@ -1,9 +1,19 @@
+<script>
+export default {
+    data() {
+        return {
+            isLogin: false
+        }
+    }
+}
+</script>
+
 <template>
     <div class="navbar bg-base-100 absolute z-40">
         <div class="flex-1">
             <a class="btn btn-ghost normal-case text-xl">MotoRT</a>
         </div>
-        <div class="flex-none">
+        <div v-if="isLogin" class="flex-none">
             <div class="dropdown dropdown-end">
                 <label tabindex="0" class="btn btn-ghost btn-circle">
                     <div class="indicator">
@@ -59,6 +69,9 @@
                     <li><a>Logout</a></li>
                 </ul>
             </div>
+        </div>
+        <div v-else>
+            <router-link :to="{ name: 'LoginView'}" class="btn btn-ghost normal-case">Connexion</router-link>
         </div>
     </div>
 </template>
