@@ -1,9 +1,13 @@
 'use strict'
 
 const express = require('express')
-// Boot express
-
 const cors = require('cors')
+const bodyParser = require('body-parser')
+const app = express()
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
+
+require('dotenv').config()
 
 const whitelist = ['http://localhost:3000']
 const corsOptions = {
@@ -18,48 +22,71 @@ const corsOptions = {
 }
 app.use(cors(corsOptions))
 
-const app = express()
-const cookieSession = require('cookie-session')
-const bodyParser = require('body-parser')
-const passport = require('passport')
-const port = 8080
-const db = require('../models')
-const User = db.user
-
-db.sequelize.sync({ force: true }).then(() => {
-    console.log('Drop and Resync Db')
-    initial()
-})
-
-function initial() {
-    User.create({
-        email: 'admin@localhost',
-        password: 'admin',
-        firstname: 'admin',
-        lastname: 'admin',
-        age: 36,
-        isVerified: true,
-        confirmationCode: 'admin',
-        isAdmin: true,
-        isReported: false,
-    })
-    User.create({
-        email: 'user@localhost',
-        password: 'user',
-        firstname: 'user',
-        lastname: 'user',
-        age: 25,
-        isVerified: true,
-        confirmationCode: 'user',
-        isAdmin: false,
-        isReported: false,
-    })
-}
-
-const LocalStrategy = require('passport-local').Strategy
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
+const cookieSession = require('cookie-session')
+app.use(require('cookie-parser')())
+app.use(
+    require('express-session')({
+        secret: 'keyboard cat',
+        resave: true,
+        saveUninitialized: true,
+    })
+)
+app.use(passport.initialize())
+app.use(passport.session())
+
+passport.use(
+    new LocalStrategy(function (username, password, done) {
+        User.findOne({ username: username })
+            .populate('roles', '-__v')
+            .exec((err, user) => {
+                if (err) {
+                    return done(err)
+                }
+
+                if (!user) {
+                    return done(null, false, { message: 'Incorrect username.' })
+                }
+
+                var passwordIsValid = bcrypt.compareSync(
+                    password,
+                    user.password
+                )
+
+                if (!passwordIsValid) {
+                    return done(null, false, { message: 'Incorrect password.' })
+                }
+
+                var authorities = []
+
+                for (let i = 0; i < user.roles.length; i++) {
+                    authorities.push('ROLE_' + user.roles[i].name.toUpperCase())
+                }
+
+                // user details
+                const user_information = {
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    roles: authorities,
+                }
+
+                return done(null, user_information)
+            })
+    })
+)
+
+passport.serializeUser(function (user, done) {
+    done(null, user.id)
+})
+
+passport.deserializeUser(function (id, done) {
+    User.findById(id, function (err, user) {
+        done(err, user)
+    })
+})
 
 app.use(
     cookieSession({
@@ -73,10 +100,45 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 // Application routing
-require('./app/routes/auth.routes')(app)
-require('./app/routes/user.routes')(app)
-app.use('/api', (req, res, next) => {
-    res.status(200).send({ data: 'Hello moto-rc !' })
+require('./routes/auth.routes')(app)
+require('./routes/user.routes')(app)
+
+passport.use(
+    new LocalStrategy(
+        {
+            usernameField: 'email',
+            passwordField: 'password',
+        },
+        (username, password, done) => {
+            let user = users.find((user) => {
+                return user.email === username && user.password === password
+            })
+
+            if (user) {
+                done(null, user)
+            } else {
+                done(null, false, { message: 'Incorrect username or password' })
+            }
+        }
+    )
+)
+
+passport.serializeUser((user, done) => {
+    done(null, user.id)
+})
+
+passport.deserializeUser((id, done) => {
+    let user = users.find((user) => {
+        return user.id === id
+    })
+
+    done(null, user)
+})
+
+// set port, listen for requests
+const port = process.env.PORT || 8080
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}.`)
 })
 
 // Start server

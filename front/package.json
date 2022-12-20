@@ -1,6 +1,8 @@
 {
   "name": "moto-rt-front",
   "version": "0.0.1",
+  "description": "Moto RT Front",
+  "main": "main.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

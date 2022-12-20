@@ -1,110 +1,71 @@
-<template>
-    <main>
-        <div class='h-screen grid justify-center items-center'>
-            <div class='bg-gray-700 p-11 rounded-lg grid gap-4'>
-                <h1>Inscription</h1>
-                <FormRegister class='grid gap-1' :validation-schema="schema" @submit="handleRegister">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <Field name="email" type="text" class="form-control" />
-                        <ErrorMessage name="email" class="error-feedback" />
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <Field name="password" type="password" class="form-control" />
-                        <ErrorMessage name="password" class="error-feedback" />
-                    </div>
-
-
-                    <div class="form-group">
-                        <button class="btn btn-primary btn-block" :disabled="loading">
-                          <span
-                              v-show="loading"
-                              class="spinner-border spinner-border-sm"
-                          ></span>
-                            Sign Up
-                        </button>
-                    </div>
-
-                    <div
-                        v-if="message"
-                        class="alert"
-                        :class="successful ? 'alert-success' : 'alert-danger'"
-                    >
-                        {{ message }}
-                    </div>
-                </FormRegister>
-            </div>
-        </div>
-    </main>
-</template>
-
-<script>
-import { ErrorMessage, Field, Form } from 'vee-validate'
+<script setup>
+import { Field, Form } from 'vee-validate'
+import * as Yup from 'yup'
 import * as yup from 'yup'
 
-export default {
-    name: "RegisterView",
-    components: {
-        FormRegister: Form,
-        Field,
-        ErrorMessage,
-    },
-    data() {
-        const schema = yup.object().shape({
-            email: yup
-                .string()
-                .required("Email is required!")
-                .email("Email is invalid!")
-                .max(50, "Must be maximum 50 characters!"),
-            password: yup
-                .string()
-                .required("Password is required!")
-                .min(6, "Must be at least 6 characters!")
-                .max(40, "Must be maximum 40 characters!"),
-        });
+import { useAlertStore, useAuthStore } from '@/stores'
+import router from '../router/router'
 
-        return {
-            successful: false,
-            loading: false,
-            message: "",
-            schema,
-        };
-    },
-    computed: {
-        loggedIn() {
-            return this.$store.state.auth.status.loggedIn;
-        },
-    },
-    mounted() {
-        if (this.loggedIn) {
-            this.$router.push("/profile");
-        }
-    },
-    methods: {
-        handleRegister(user) {
-            this.message = "";
-            this.successful = false;
-            this.loading = true;
+const schema = Yup.object().shape({
+    username: yup
+        .string()
+        .required("Username is required!")
+        .max(50, "Must be maximum 50 characters!"),
+    email: yup
+        .string()
+        .required("Email is required!")
+        .email("Email is invalid!")
+        .max(50, "Must be maximum 50 characters!"),
+    password: yup
+        .string()
+        .required("Password is required!")
+        .min(6, "Must be at least 6 characters!")
+        .max(40, "Must be maximum 40 characters!"),
+});
 
-            this.$store.dispatch("auth/register", user).then(
-                (data) => {
-                    this.message = data.message;
-                    this.successful = true;
-                    this.loading = false;
-                },
-                (error) => {
-                    this.message =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    this.successful = false;
-                    this.loading = false;
-                }
-            );
-        },
-    },
-};
+async function onSubmit(values) {
+    const authStore = useAuthStore();
+    const alertStore = useAlertStore();
+    try {
+        await authStore.register(values);
+        await router.push('/account/login');
+        alertStore.success('Registration successful');
+    } catch (error) {
+        alertStore.error(error);
+    }
+}
 </script>
+
+<template>
+    <div class='h-screen grid justify-center items-center'>
+        <div class='bg-gray-700 p-11 rounded-lg grid gap-4'>
+            <h1>Inscription</h1>
+        <div class="card-body">
+            <Form v-slot="{ errors, isSubmitting }" :validation-schema="schema" @submit="onSubmit">
+                <div class="form-group">
+                    <label>Username</label>
+                    <Field name="username" type="text" class="form-control" :class="{ 'is-invalid': errors.username }" />
+                    <div class="invalid-feedback">{{ errors.username }}</div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <Field name="email" type="email" class="form-control" :class="{ 'is-invalid': errors.email }" />
+                    <div class="invalid-feedback">{{ errors.email }}</div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <Field name="password" type="password" class="form-control" :class="{ 'is-invalid': errors.password }" />
+                    <div class="invalid-feedback">{{ errors.password }}</div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" :disabled="isSubmitting">
+                        <span v-show="isSubmitting" class="spinner-border spinner-border-sm mr-1"></span>
+                        Register
+                    </button>
+                    <router-link to="login" class="btn btn-link">Cancel</router-link>
+                </div>
+            </Form>
+        </div>
+    </div>
+    </div>
+</template>

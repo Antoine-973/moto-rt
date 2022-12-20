@@ -6,7 +6,7 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js localhost 8080",
-    "migrate": "node ./common/migrate.js"
+    "migrate": "node src/common/migrate.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
