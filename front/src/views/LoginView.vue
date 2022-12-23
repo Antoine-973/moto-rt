@@ -1,101 +1,44 @@
-<template>
-    <main>
-        <div class='h-screen grid justify-center items-center'>
-            <div class='bg-gray-700 p-11 rounded-lg grid gap-4'>
-                <h1>Connexion</h1>
-<!--                <form class='grid gap-1' @submit="login">-->
-<!--                    <input class="input input-bordered w-full max-w-xs" type="text" name="email" /><br>-->
-<!--                    <input class="input input-bordered w-full max-w-xs" type="password" name="password" /><br>-->
-<!--                    <input class='btn btn-primary' type="submit" value="Login" />-->
-<!--                    <router-link :to="{ name: 'HomeView'}" class="btn btn-ghost normal-case">Annuler</router-link>-->
-<!--                </form>-->
-                <LoginForm :validation-schema="schema" @submit="handleLogin">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <Field name="email" type="email" class="form-control" />
-                        <ErrorMessage name="email" class="error-feedback" />
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <Field name="password" type="password" class="form-control" />
-                        <ErrorMessage name="password" class="error-feedback" />
-                    </div>
+<script setup>
+import { Form, Field } from 'vee-validate';
+import * as Yup from 'yup';
 
-                    <div class="form-group">
-                        <button class="btn btn-primary btn-block" :disabled="loading">
-            <span
-                v-show="loading"
-                class="spinner-border spinner-border-sm"
-            ></span>
-                            <span>Login</span>
-                        </button>
-                    </div>
+import { useAuthStore }  from '../stores/auth.store.js';
 
-                    <div class="form-group">
-                        <div v-if="message" class="alert alert-danger" role="alert">
-                            {{ message }}
-                        </div>
-                    </div>
-                </LoginForm>
-            </div>
-        </div>
-    </main>
-</template>
+const schema = Yup.object().shape({
+    email: Yup.string().required('Email is required').email('Email is not valid'),
+    password: Yup.string().required('Password is required')
+});
 
-<script>
-import { Form, Field, ErrorMessage } from "vee-validate";
-import * as yup from "yup";
-import { computed } from 'vue'
+function onSubmit(values, { setErrors }) {
+    const authStore = useAuthStore();
+    const { email, password } = values;
 
-export default {
-    name: "LoginView",
-    components: {
-        LoginForm : Form,
-        Field,
-        ErrorMessage,
-    },
-    data() {
-        const schema = yup.object().shape({
-            email: yup.string().required("Email is required!"),
-            password: yup.string().required("Password is required!"),
-        });
-
-        return {
-            loading: false,
-            message: "",
-            schema,
-        };
-    },
-    computed: {
-        loggedIn() {
-            const authUserStore = useAuthUserStore()
-            return computed(() => authUserStore.loggedIn)
-        },
-    },
-    created() {
-        if (this.loggedIn) {
-            this.$router.push("/profile");
-        }
-    },
-    methods: {
-        handleLogin(user) {
-            this.loading = true;
-
-            this.$store.dispatch("auth/login", user).then(
-                () => {
-                    this.$router.push("/profile");
-                },
-                (error) => {
-                    this.loading = false;
-                    this.message =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                }
-            );
-        },
-    },
-};
+    return authStore.login(email, password)
+        .catch(error => setErrors({ apiError: error }));
+}
 </script>
+
+<template>
+    <div>
+        <h2>Login</h2>
+        <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }">
+            <div class="form-group">
+                <label>Email</label>
+                <Field name="email" type="text" class="form-control" :class="{ 'is-invalid': errors.email }" />
+                <div class="invalid-feedback">{{errors.email}}</div>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <Field name="password" type="password" class="form-control" :class="{ 'is-invalid': errors.password }" />
+                <div class="invalid-feedback">{{errors.password}}</div>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" :disabled="isSubmitting">
+                    <span v-show="isSubmitting" class="spinner-border spinner-border-sm mr-1"></span>
+                    Login
+                </button>
+            </div>
+            <div v-if="errors.apiError" class="alert alert-danger mt-3 mb-0">{{errors.apiError}}</div>
+        </Form>
+    </div>
+</template>

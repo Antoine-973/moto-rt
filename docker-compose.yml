@@ -13,9 +13,9 @@ services:
 #      - /home/node/api/node_modules
     working_dir: /home/node/api
     environment:
-      - PORT=4000
+      - PORT=8080
       - MONGO_URL=mongodb://root:password@mongo:27017/app?authSource=admin
-      - DATABASE_URL=postgres://root:password@db/app
+      - DATABASE_URL=postgres://root:password@postgres/app
       - JWT_SECRET=secret
     container_name: moto-rc-api
     command: sh -c "npm install && npm run dev"
