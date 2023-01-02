@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Hi {{authUser?.firstName}}!</h1>
+        <h1>Hi {{authUser?.username}}!</h1>
         <p>You're logged in with Vue 3 + Pinia & JWT!!</p>
     </div>
 </template>
@@ -13,5 +13,4 @@ import { useAuthStore } from '../stores';
 const authStore = useAuthStore();
 const { user: authUser } = storeToRefs(authStore);
 
-console.log(authUser.value);
 </script>
