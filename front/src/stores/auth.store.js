@@ -1,27 +1,51 @@
 import { defineStore } from 'pinia'
-import jwt_decode from 'jwt-decode'
-import router from '../router/router.js'
 import AuthService from '../services/auth.service'
+
+const user = JSON.parse(localStorage.getItem('user'));
+const initialState = user
+    ? { status: { loggedIn: true }, user }
+    : { status: { loggedIn: false }, user: null };
 
 export const useAuthStore = defineStore({
     id: 'auth',
     state: () => ({
-        // initialize state from local storage to enable user to stay logged in
-        user: jwt_decode(JSON.parse(localStorage.getItem('user')).token),
-        returnUrl: null,
+        user: initialState,
     }),
     actions: {
         async login(email, password) {
-            const jwtToken = await AuthService.login({ email, password })
-
-            this.user = jwt_decode(jwtToken.token)
-
-            await router.push(this.returnUrl || '/')
+            return AuthService.login({ email, password }).then(
+                user => {
+                    this.user = user;
+                    this.status = { loggedIn: true };
+                    return Promise.resolve(user);
+                },
+                error => {
+                    this.status = { loggedIn: false };
+                    this.user = null;
+                    return Promise.reject(error);
+                }
+            );
+        },
+        async register(user) {
+            return AuthService.register(user).then(
+                response => {
+                    this.status = { loggedIn: false };
+                    return Promise.resolve(response.data);
+                },
+                error => {
+                    this.status = { loggedIn: false };
+                    return Promise.reject(error);
+                }
+            );
         },
         logout() {
-            this.user = null
-            localStorage.removeItem('user')
-            router.push('/login')
+            AuthService.logout();
+            this.user = null;
+            this.status = { loggedIn: false };
         },
+        refreshToken(accessToken) {
+            this.status = { loggedIn: true };
+            this.user = {...this.user, accessToken};
+        }
     },
 })

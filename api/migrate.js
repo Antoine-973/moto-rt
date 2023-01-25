@@ -1,4 +1,4 @@
-const { connection } = require("./src/models/postgres");
+const { connection } = require("./src/models");
 
 connection
   .sync({

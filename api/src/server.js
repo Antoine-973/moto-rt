@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use("/api", SecurityRouter);
 
-app.use("/api", verifyToken, UserRouter);
+// app.use("/api", verifyToken, UserRouter);
 
 const port = process.env.PORT || 8080;
 

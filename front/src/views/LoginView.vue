@@ -2,7 +2,7 @@
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
 
-import { useAuthStore }  from '../stores/auth.store.js';
+import { useAuthStore }  from '../stores';
 
 const schema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email is not valid'),

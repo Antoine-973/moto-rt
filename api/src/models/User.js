@@ -24,10 +24,15 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    isAdmin: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
+    role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "ROLE_USER",
+    },
+    isVerified: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
     },
   },
   {

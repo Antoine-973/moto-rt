@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_RESSOURCE_URI } from '../common/api-ressources/api.ressources.uri'
+import TokenService from './TokenService'
 
 class AuthService {
     login(user) {
@@ -9,16 +10,23 @@ class AuthService {
                 password: user.password
             })
             .then(response => {
-                if (response.data.accessToken) {
-                    localStorage.setItem('user', JSON.stringify(response.data));
+                console.log(response)
+                if (response.data.token) {
+                    TokenService.setUser(response.data);
                 }
 
                 return response.data;
             });
     }
 
+    verifyAccount(token) {
+        return axios.get(`${API_RESSOURCE_URI.USER_CONFIRM}/${token}`).then(response => {
+            return response.data;
+        })
+    }
+
     logout() {
-        localStorage.removeItem('user');
+        TokenService.removeUser();
     }
 }
 

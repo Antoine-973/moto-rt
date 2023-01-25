@@ -1,16 +1,14 @@
+require('dotenv').config();
 const jwt = require("jsonwebtoken");
+const jwtExpiration = process.env.JWT_EXPIRATION;
 
 exports.createToken = (user) => {
   const payload = {
     id: user.id,
-    username: user.username,
-    email: user.email,
-    isAdmin: user.isAdmin,
-    firtsname: user.firtsname,
-    lastname: user.lastname,
+    role: user.role,
   };
   return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "1y",
+    expiresIn: jwtExpiration,
     algorithm: "HS512",
   });
 };
@@ -20,7 +18,7 @@ exports.verifyToken = (token) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     return {
       id: decoded.id,
-      name: decoded.name,
+      role: decoded.role,
     };
   } catch (error) {
     return null;

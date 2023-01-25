@@ -3,5 +3,7 @@ import AppRouter from './AppRouter.vue'
 </script>
 
 <template>
-    <AppRouter />
+    <div class=''>
+        <AppRouter />
+    </div>
 </template>

@@ -10,9 +10,6 @@ export const useUsersStore = defineStore({
         user: {}
     }),
     actions: {
-        async register(user) {
-            await UserService.register(user);
-        },
         async getAll() {
             this.users = { loading: true };
             try {

@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
-import ProfileView from '../views/ProfileView.vue'
+import DashboardView from '../views/DashboardView.vue'
+import ConfirmAccountView from '../views/ConfirmAccountView.vue'
 
 
 const router = createRouter({
@@ -24,11 +25,16 @@ const router = createRouter({
             component: RegisterView,
         },
         {
-            path: '/profile',
-            name: 'ProfileView',
+            path: '/dashboard',
+            name: 'DashboardView',
             // lazy-loaded
-            component: ProfileView,
+            component: DashboardView,
         },
+        {
+            path: '/confirm/:token',
+            name: 'ConfirmAccountView.vue',
+            component: ConfirmAccountView,
+        }
     ],
 })
 

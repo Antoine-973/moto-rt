@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { User } = require("../models/postgres");
+const { User } = require("../models");
 const { ValidationError } = require("sequelize");
 
 const router = new Router();
