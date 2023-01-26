@@ -37,6 +37,7 @@
         </div>
         <div v-else>
             <router-link :to="{ name: 'LoginView'}" class="btn btn-ghost normal-case">Connexion</router-link>
+            <router-link :to="{ name: 'RegisterView'}" class="btn btn-ghost normal-case">Inscription</router-link>
         </div>
     </div>
 </template>

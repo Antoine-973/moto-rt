@@ -19,26 +19,40 @@ function onSubmit(values, { setErrors }) {
 </script>
 
 <template>
-    <div>
-        <h2>Login</h2>
-        <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }">
-            <div class="form-group">
-                <label>Email</label>
-                <Field name="email" type="text" class="form-control" :class="{ 'is-invalid': errors.email }" />
-                <div class="invalid-feedback">{{errors.email}}</div>
+    <div class='w-screen h-screen bg-slate-900 flex flex-col items-center justify-center gap-5'>
+        <div class="card w-96 bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">Connexion</h2>
+                <Form v-slot="{ errors, isSubmitting }" :validation-schema="schema" @submit="onSubmit">
+                    <div class='flex flex-col gap-2'>
+                        <div class="form-control w-full max-w-xs">
+                            <label class='label'><span class="label-text">Adresse email</span></label>
+                            <Field name="email" type="text" class="input input-bordered w-full max-w-xs" :class="{ 'is-invalid': errors.email }" />
+                            <label class="label">
+                                <span class="label-text-alt text-red-500">{{ errors.email }}</span>
+                            </label>
+                        </div>
+                        <div class="form-control w-full max-w-xs">
+                            <label class='label'><span class="label-text">Mot de passe</span></label>
+                            <Field name="password" type="password" class="input input-bordered w-full max-w-xs" :class="{ 'is-invalid': errors.password }" />
+                            <label class="label">
+                                <span class="label-text-alt text-red-500">{{ errors.password }}</span>
+                            </label>
+                        </div>
+                        <div class="form-control w-full max-w-xs">
+                            <button class="btn btn-primary" :disabled="isSubmitting">
+                                <span v-show="isSubmitting" class="spinner-border spinner-border-sm mr-1"></span>
+                                Connexion
+                            </button>
+                        </div>
+                        <div v-if="errors.apiError" class="alert alert-danger mt-3 mb-0">{{errors.apiError}}</div>
+                    </div>
+                </Form>
             </div>
-            <div class="form-group">
-                <label>Password</label>
-                <Field name="password" type="password" class="form-control" :class="{ 'is-invalid': errors.password }" />
-                <div class="invalid-feedback">{{errors.password}}</div>
-            </div>
-            <div class="form-group">
-                <button class="btn btn-primary" :disabled="isSubmitting">
-                    <span v-show="isSubmitting" class="spinner-border spinner-border-sm mr-1"></span>
-                    Login
-                </button>
-            </div>
-            <div v-if="errors.apiError" class="alert alert-danger mt-3 mb-0">{{errors.apiError}}</div>
-        </Form>
+        </div>
+        <div class='flex gap-2 items-center'>
+            <h3>Vous n'avez pas de compte ?</h3>
+            <router-link to="register" class="btn-link">Inscrivez vous</router-link>
+        </div>
     </div>
 </template>
