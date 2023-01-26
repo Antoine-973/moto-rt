@@ -1,51 +1,67 @@
 import { defineStore } from 'pinia'
 import AuthService from '../services/auth.service'
+import axios from 'axios'
+import TokenService from '@/services/TokenService'
 
-const user = JSON.parse(localStorage.getItem('user'));
-const initialState = user
-    ? { status: { loggedIn: true }, user }
-    : { status: { loggedIn: false }, user: null };
+const token = localStorage.getItem('token') || null
 
 export const useAuthStore = defineStore({
     id: 'auth',
     state: () => ({
-        user: initialState,
+        token: token,
+        user: null,
+        loggedIn: !!token || false,
     }),
     actions: {
+        me() {
+            if (!this.token) {
+                return Promise.reject('No JWT token provided.')
+            }
+
+            axios.defaults.headers.common[
+                'Authorization'
+            ] = `Bearer ${this.token}`
+
+            return AuthService.me().then((user) => {
+                this.user = user
+                return Promise.resolve(user)
+            })
+        },
         async login(email, password) {
             return AuthService.login({ email, password }).then(
-                user => {
-                    this.user = user;
-                    this.status = { loggedIn: true };
-                    return Promise.resolve(user);
+                (user) => {
+                    this.user = user
+                    this.loggedIn = true
+                    return Promise.resolve(user)
                 },
-                error => {
-                    this.status = { loggedIn: false };
-                    this.user = null;
-                    return Promise.reject(error);
+                (error) => {
+                    this.loggedIn = false
+                    this.user = null
+                    return Promise.reject(error)
                 }
-            );
+            )
         },
         async register(user) {
             return AuthService.register(user).then(
-                response => {
-                    this.status = { loggedIn: false };
-                    return Promise.resolve(response.data);
+                (response) => {
+                    this.loggedIn = false
+                    return Promise.resolve(response.data)
                 },
-                error => {
-                    this.status = { loggedIn: false };
-                    return Promise.reject(error);
+                (error) => {
+                    this.loggedIn = false
+                    return Promise.reject(error)
                 }
-            );
+            )
         },
         logout() {
-            AuthService.logout();
-            this.user = null;
-            this.status = { loggedIn: false };
+            TokenService.removeToken()
+            this.token = null
+            this.user = null
+            this.loggedIn = false
         },
         refreshToken(accessToken) {
-            this.status = { loggedIn: true };
-            this.user = {...this.user, accessToken};
-        }
+            this.loggedIn = false
+            this.user = { ...this.user, accessToken }
+        },
     },
 })

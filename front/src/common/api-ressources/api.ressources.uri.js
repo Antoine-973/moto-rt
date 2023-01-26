@@ -9,4 +9,5 @@ export const API_RESSOURCE_URI = {
     USER_LOGIN: `${BASE_URI}/login`,
     USER_LOGOUT: `${BASE_URI}/logout`,
     USER_CONFIRM: `${BASE_URI}/confirm`,
+    USER_ME: `${BASE_URI}/me`,
 }

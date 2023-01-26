@@ -1,33 +1,49 @@
-import axios from 'axios';
+import axios from 'axios'
 import { API_RESSOURCE_URI } from '../common/api-ressources/api.ressources.uri'
 import TokenService from './TokenService'
 
 class AuthService {
+    me() {
+        return axios
+            .get(API_RESSOURCE_URI.USER_ME)
+            .then((response) => {
+                return response.data
+            })
+            .catch((error) => {
+                return error.response.data
+            })
+    }
+
     login(user) {
         return axios
             .post(API_RESSOURCE_URI.USER_LOGIN, {
                 email: user.email,
-                password: user.password
+                password: user.password,
             })
-            .then(response => {
-                console.log(response)
+            .then((response) => {
                 if (response.data.token) {
-                    TokenService.setUser(response.data);
+                    TokenService.setToken(response.data.token)
                 }
 
-                return response.data;
-            });
+                return response.data
+            })
     }
 
-    verifyAccount(token) {
-        return axios.get(`${API_RESSOURCE_URI.USER_CONFIRM}/${token}`).then(response => {
-            return response.data;
+    register(user) {
+        return axios.post(API_RESSOURCE_URI.USER_REGISTER, {
+            username: user.username,
+            email: user.email,
+            password: user.password,
         })
     }
 
-    logout() {
-        TokenService.removeUser();
+    verifyAccount(token) {
+        return axios
+            .get(`${API_RESSOURCE_URI.USER_CONFIRM}/${token}`)
+            .then((response) => {
+                return response.data
+            })
     }
 }
 
-export default new AuthService();
+export default new AuthService()

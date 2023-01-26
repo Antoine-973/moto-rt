@@ -1,9 +1,22 @@
 <script setup>
-import { Form, Field } from 'vee-validate';
-import * as Yup from 'yup';
+import { Field, Form } from 'vee-validate'
+import * as Yup from 'yup'
 
-import { useUsersStore, useAlertStore } from '../stores';
-import router from '../router/router';
+import { useAlertStore, useAuthStore } from '../stores'
+import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+
+const authStore = useAuthStore();
+const { user: authUser } = storeToRefs(authStore);
+const isLogged = authUser.value.status.loggedIn;
+const router = useRouter();
+
+onMounted(() => {
+    if (isLogged) {
+        router.push({ name: 'HomeView' });
+    }
+})
 
 const schema = Yup.object().shape({
     username: Yup.string()
@@ -16,16 +29,15 @@ const schema = Yup.object().shape({
         .min(6, 'Password must be at least 6 characters')
 });
 
-async function onSubmit(values) {
-    const usersStore = useUsersStore();
+async function onSubmit(values, { setErrors } ) {
+    const authStore = useAuthStore();
     const alertStore = useAlertStore();
-    try {
-        await usersStore.register(values);
-        await router.push('/login');
-        alertStore.success('Registration successful');
-    } catch (error) {
-        alertStore.error(error);
-    }
+    await authStore.register(values).then(async () => {
+        await router.push('/login').then(() => {
+            alertStore.success("Inscription réussie veuillez valider votre compte via l'émail que nous venons de vous envoyer !");
+        }
+        );
+    }).catch(error => setErrors({ apiError: error.response.data.message }));
 }
 </script>
 
@@ -60,9 +72,10 @@ async function onSubmit(values) {
                         <div class="form-control w-full max-w-xs">
                             <button class="btn btn-primary" :disabled="isSubmitting">
                                 <span v-show="isSubmitting" class="spinner-border spinner-border-sm mr-1"></span>
-                                Register
+                                Inscription
                             </button>
                         </div>
+                        <div v-if="errors.apiError" class="form-control w-full max-w-xs alert alert-error shadow-lg text-white">{{errors.apiError}}</div>
                     </div>
                 </Form>
             </div>

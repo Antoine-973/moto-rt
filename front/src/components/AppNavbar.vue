@@ -4,9 +4,9 @@
     import { useAuthStore } from '../stores';
 
     const authStore = useAuthStore();
-    const { user: authUser } = storeToRefs(authStore);
+    const auth = storeToRefs(authStore);
 
-    const user = authUser.value.user;
+    const user = auth.token.value;
 </script>
 
 <template>

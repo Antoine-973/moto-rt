@@ -3,6 +3,20 @@ import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
 
 import { useAuthStore }  from '../stores';
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
+
+const authStore = useAuthStore();
+const auth = storeToRefs(authStore);
+const isLogged = auth.loggedIn.value;
+const router = useRouter();
+
+onMounted(() => {
+    if (isLogged) {
+        router.push({ name: 'HomeView' });
+    }
+})
 
 const schema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email is not valid'),
@@ -10,11 +24,10 @@ const schema = Yup.object().shape({
 });
 
 function onSubmit(values, { setErrors }) {
-    const authStore = useAuthStore();
     const { email, password } = values;
-
     return authStore.login(email, password)
-        .catch(error => setErrors({ apiError: error }));
+        .then(() => router.push({ name: 'HomeView' }))
+        .catch(error => setErrors({ apiError: error.response.data.message }));
 }
 </script>
 
@@ -45,7 +58,7 @@ function onSubmit(values, { setErrors }) {
                                 Connexion
                             </button>
                         </div>
-                        <div v-if="errors.apiError" class="alert alert-danger mt-3 mb-0">{{errors.apiError}}</div>
+                        <div v-if="errors.apiError" class="form-control w-full max-w-xs alert alert-error shadow-lg text-white">{{errors.apiError}}</div>
                     </div>
                 </Form>
             </div>
