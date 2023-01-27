@@ -4,7 +4,6 @@ services:
   nodejs:
     image: node:lts-alpine
     depends_on:
-      - mongo
       - postgres
     ports:
       - "8080:8080"
@@ -13,9 +12,8 @@ services:
 #      - /home/node/api/node_modules
     working_dir: /home/node/api
     environment:
-      - PORT=4000
-      - MONGO_URL=mongodb://root:password@mongo:27017/app?authSource=admin
-      - DATABASE_URL=postgres://root:password@db/app
+      - PORT=8080
+      - DATABASE_URL=postgres://root:password@postgres/app
       - JWT_SECRET=secret
     container_name: moto-rc-api
     command: sh -c "npm install && npm run dev"
@@ -33,17 +31,6 @@ services:
       - PORT=3000
     command: sh -c "npm install && npm run dev"
 
-  mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: password
-    volumes:
-      - mongo-data:/data/db
-    working_dir: /usr/local/sampleCollections
-
   postgres:
     image: postgres:14-alpine
     restart: always
@@ -59,5 +46,4 @@ services:
         protocol: tcp
 
 volumes:
-  mongo-data: { }
   postgres-data: { }
