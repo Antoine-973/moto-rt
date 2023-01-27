@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import AuthService from '../services/auth.service'
 import axios from 'axios'
 import TokenService from '@/services/TokenService'
+import router from '@/router/router'
 
 const token = localStorage.getItem('token') || null
 
@@ -15,6 +16,7 @@ export const useAuthStore = defineStore({
     actions: {
         me() {
             if (!this.token) {
+                this.logout()
                 return Promise.reject('No JWT token provided.')
             }
 
@@ -22,17 +24,22 @@ export const useAuthStore = defineStore({
                 'Authorization'
             ] = `Bearer ${this.token}`
 
-            return AuthService.me().then((user) => {
-                this.user = user
-                return Promise.resolve(user)
-            })
+            return AuthService.me()
+                .then((user) => {
+                    this.user = user
+                    return Promise.resolve(user)
+                })
+                .catch((error) => {
+                    this.logout()
+                    return Promise.reject(error)
+                })
         },
         async login(email, password) {
             return AuthService.login({ email, password }).then(
-                (user) => {
-                    this.user = user
+                (token) => {
+                    this.token = token.token
                     this.loggedIn = true
-                    return Promise.resolve(user)
+                    return Promise.resolve(token)
                 },
                 (error) => {
                     this.loggedIn = false
@@ -58,10 +65,7 @@ export const useAuthStore = defineStore({
             this.token = null
             this.user = null
             this.loggedIn = false
-        },
-        refreshToken(accessToken) {
-            this.loggedIn = false
-            this.user = { ...this.user, accessToken }
+            router.push({ name: 'LoginView' })
         },
     },
 })

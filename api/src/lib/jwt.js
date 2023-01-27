@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
-const jwtExpiration = process.env.JWT_EXPIRATION
 require('dotenv').config()
+const jwtExpiration = process.env.JWT_EXPIRATION
 
 exports.createToken = (user) => {
     const payload = {

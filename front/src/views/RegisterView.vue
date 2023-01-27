@@ -3,20 +3,9 @@ import { Field, Form } from 'vee-validate'
 import * as Yup from 'yup'
 
 import { useAlertStore, useAuthStore } from '../stores'
-import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { onMounted } from 'vue'
 
-const authStore = useAuthStore();
-const { user: authUser } = storeToRefs(authStore);
-const isLogged = authUser.value.status.loggedIn;
 const router = useRouter();
-
-onMounted(() => {
-    if (isLogged) {
-        router.push({ name: 'HomeView' });
-    }
-})
 
 const schema = Yup.object().shape({
     username: Yup.string()

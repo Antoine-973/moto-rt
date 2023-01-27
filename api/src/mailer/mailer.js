@@ -1,8 +1,6 @@
 require('dotenv').config()
 const mailer = require('nodemailer')
-const AccountValidationRequest = require('../models/AccountValidationRequest')
 
-console.log(process.env.EMAIL_ADDRESS, process.env.EMAIL_PASSWORD)
 const transporter = mailer.createTransport({
     service: 'gmail',
     auth: {

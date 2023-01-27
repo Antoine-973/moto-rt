@@ -10,7 +10,7 @@ class AuthService {
                 return response.data
             })
             .catch((error) => {
-                return error.response.data
+                return Promise.reject(error)
             })
     }
 

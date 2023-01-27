@@ -11,7 +11,7 @@ module.exports = (req, res, next) => {
     }
     const user = decodeToken(token)
     if (!user) {
-        return res.sendStatus(401)
+        return res.sendStatus(401, { message: 'Invalid token' })
     }
     req.user = user
     next()

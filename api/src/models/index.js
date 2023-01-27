@@ -1,5 +1,4 @@
-exports.connection = require("./db");
-exports.User = require("./User");
-exports.AccountValidationRequest = require("./AccountValidationRequest");
-exports.ResetPasswordRequest = require("./ResetPasswordRequest");
-exports.RefreshToken = require("./RefreshToken");
+exports.connection = require('./db')
+exports.User = require('./User')
+exports.AccountValidationRequest = require('./AccountValidationRequest')
+exports.ResetPasswordRequest = require('./ResetPasswordRequest')

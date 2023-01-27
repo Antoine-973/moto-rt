@@ -44,7 +44,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const authStore = useAuthStore()
-    const token = localStorage.getItem('token') || null
+    const token = localStorage.getItem('token')
     if (to.meta.role !== 'Guest') {
         if (token) {
             authStore
@@ -72,6 +72,8 @@ router.beforeEach((to, from, next) => {
                 })
                 if (user) {
                     next({ name: 'HomeView' })
+                } else {
+                    next()
                 }
             } else {
                 next()

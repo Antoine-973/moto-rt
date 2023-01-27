@@ -6,7 +6,11 @@
     const authStore = useAuthStore();
     const auth = storeToRefs(authStore);
 
-    const user = auth.token.value;
+    const token = auth.token.value;
+
+    const logout = () => {
+        authStore.logout();
+    }
 </script>
 
 <template>
@@ -14,7 +18,7 @@
         <div class="flex-1">
             <a class="btn btn-ghost normal-case text-xl">MotoRT</a>
         </div>
-        <div v-if="user" class="flex-none">
+        <div v-if="token" class="flex-none">
             <div class="dropdown dropdown-end">
                 <label tabindex="0" class="btn btn-ghost btn-circle avatar">
                     <div class="w-10 rounded-full">
@@ -31,7 +35,7 @@
                         </a>
                     </li>
                     <li><a>Settings</a></li>
-                    <li><a>Logout</a></li>
+                    <li><a @click='logout' >Logout</a></li>
                 </ul>
             </div>
         </div>

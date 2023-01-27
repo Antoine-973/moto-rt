@@ -5,8 +5,6 @@ const { User, AccountValidationRequest } = require('../models')
 const { comparePassword } = require('../lib/bcrypt')
 const { body, validationResult } = require('express-validator')
 const { confirmationEmail } = require('../mailer/mailer')
-const RefreshToken = require('../models/RefreshToken')
-const { where } = require('sequelize')
 require('dotenv').config()
 
 const router = new Router()
@@ -16,29 +14,27 @@ router.post('/login', async (req, res) => {
         const user = await User.findOne({ where: { email: req.body.email } })
         if (!user) {
             return res.status(401).json({
-                email: 'Email not found',
+                message:
+                    "Aucun utilisateur n'est associé à cette adresse email",
             })
         }
         if (comparePassword(req.body.password, user.password) === false) {
             return res.status(401).json({
-                password: 'Password is incorrect',
+                message: 'Mot de passe incorrect',
             })
         }
         if (!user.isVerified) {
             return res.status(401).json({
-                message: "Erreur : Votre compte n'est pas vérifié",
+                message: "Votre compte n'est pas vérifié",
             })
         }
         const token = createToken(user)
-
-        await RefreshToken.createToken(user)
 
         return res.status(200).send({
             token: token,
         })
     } catch (error) {
         res.sendStatus(500)
-        console.error(error)
     }
 })
 
@@ -106,47 +102,6 @@ router.get('/confirm/:token', async (req, res) => {
     } catch (error) {
         res.sendStatus(500)
         console.error(error)
-    }
-})
-
-router.post('/refreshtoken', async (req, res) => {
-    const { refreshToken: requestToken } = req.body
-
-    if (requestToken == null) {
-        return res.status(403).json({ message: 'Refresh Token is required!' })
-    }
-
-    try {
-        const refreshToken = await RefreshToken.findOne({
-            where: { token: requestToken },
-        })
-
-        if (!refreshToken) {
-            res.status(403).json({
-                message: 'Refresh token is not in database!',
-            })
-            return
-        }
-
-        if (RefreshToken.verifyExpiration(refreshToken)) {
-            await refreshToken.destroy()
-
-            res.status(403).json({
-                message:
-                    'Refresh token was expired. Please make a new signin request',
-            })
-            return
-        }
-
-        const user = await refreshToken.getUser()
-        let newAccessToken = createToken(user)
-
-        return res.status(200).json({
-            accessToken: newAccessToken,
-            refreshToken: refreshToken.token,
-        })
-    } catch (err) {
-        return res.status(500).send({ message: err })
     }
 })
 
