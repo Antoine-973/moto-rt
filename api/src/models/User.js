@@ -60,4 +60,71 @@ User.addHook('beforeUpdate', async (user, { fields }) => {
     }
 })
 
+User.seed = async () => {
+    await User.bulkCreate([
+        {
+            username: 'admin',
+            email: 'admin@motort.fr',
+            password: 'testtest',
+            role: 'ROLE_ADMIN',
+            isVerified: true,
+        },
+        {
+            username: 'user',
+            email: 'user@test.fr',
+            password: 'testtest',
+            role: 'ROLE_USER',
+            isVerified: true,
+        },
+        {
+            username: 'user2',
+            email: 'user2@test.fr',
+            password: 'testtest',
+            role: 'ROLE_USER',
+            isVerified: true,
+        },
+        {
+            username: 'user3',
+            email: 'user3@test.fr',
+            password: 'testtest',
+            role: 'ROLE_USER',
+            isVerified: true,
+        },
+        {
+            username: 'user4',
+            email: 'user4@test.fr',
+            password: 'testtest',
+            role: 'ROLE_USER',
+            isVerified: true,
+        },
+        {
+            username: 'conseiller',
+            email: 'conseiller@motort.fr',
+            password: 'testtest',
+            role: 'ROLE_CONSEILLER',
+            isVerified: true,
+        },
+        {
+            username: 'conseiller2',
+            email: 'conseiller2@motort.fr',
+            password: 'testtest',
+            role: 'ROLE_CONSEILLER',
+            isVerified: true,
+        },
+        {
+            username: 'conseiller3',
+            email: 'conseiller3@motort.fr',
+            password: 'testtest',
+            role: 'ROLE_CONSEILLER',
+            isVerified: true,
+        },
+        {
+            username: 'conseiller4',
+            email: 'conseiller4@motort.fr',
+            password: 'testtest',
+            role: 'ROLE_CONSEILLER',
+            isVerified: true,
+        },
+    ])
+}
 module.exports = User

@@ -6,7 +6,8 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js localhost 8080",
-    "migrate": "node ./migrate.js"
+    "migrate": "node ./migrate.js",
+    "seed": "node ./seed.js"
   },
   "license": "UNLICENSED",
   "dependencies": {
