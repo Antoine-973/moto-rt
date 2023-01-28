@@ -52,7 +52,7 @@ router.beforeEach((to, from, next) => {
                 .then((response) => {
                     if (
                         to.meta.role === response.role ||
-                        to.meta.role === 'ROLE_ADMIN'
+                        response.role === 'ROLE_ADMIN'
                     ) {
                         next()
                     }
