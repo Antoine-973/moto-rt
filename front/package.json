@@ -1,0 +1,33 @@
+{
+  "name": "moto-rt-front",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173"
+  },
+  "dependencies": {
+    "axios": "^1.2.1",
+    "jwt-decode": "^3.1.2",
+    "pinia": "^2.0.28",
+    "socket.io-client": "^4.5.4",
+    "vee-validate": "^4.7.3",
+    "vue": "^3.2.38",
+    "vue-router": "^4.1.6",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.8",
+    "@vitejs/plugin-vue": "^3.2.0",
+    "autoprefixer": "^10.4.13",
+    "daisyui": "^2.46.0",
+    "eslint": "^8.30.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-vue": "^9.8.0",
+    "postcss": "^8.4.20",
+    "prettier": "^2.8.1",
+    "tailwindcss": "^3.2.4",
+    "vite": "^3.2.5",
+    "vite-plugin-eslint": "^1.8.1"
+  }
+}
