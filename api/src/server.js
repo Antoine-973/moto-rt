@@ -1,12 +1,15 @@
 'use strict'
 
 const express = require("express");
-const UserRouter = require("./routes/user");
+const RoomsRouter = require("./routes/rooms");
+const UsersRouter = require("./routes/users");
 const SecurityRouter = require("./routes/security");
 const verifyToken = require("./middlewares/verifyToken");
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const app = express();
+const http = require('http');
+const server = http.createServer(app);
 const logger = require("./lib/logger");
 require('dotenv').config()
 
@@ -31,10 +34,14 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use("/api", SecurityRouter);
 
-// app.use("/api", verifyToken, UserRouter);
+app.use("/api", verifyToken, RoomsRouter);
+
+app.use("/api", verifyToken, UsersRouter);
 
 const port = process.env.PORT || 8080;
 
-app.listen(port, () => {
+initSocket(server);
+
+server.listen(port, () => {
   logger.info(`Server started on port ${process.env.PORT}`);
 });

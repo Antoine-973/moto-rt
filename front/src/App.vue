@@ -7,7 +7,7 @@ const alert = alertStore.alert
 </script>
 
 <template>
-    <div>
+    <div class='w-full h-full overflow-x-hidden'>
         <AppRouter />
         <div v-if='alert'>
             <div v-if="alert.type === 'alert-success'" class="toast">

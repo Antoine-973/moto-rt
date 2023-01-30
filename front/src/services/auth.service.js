@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { API_RESSOURCE_URI } from '../common/api-ressources/api.ressources.uri'
-import TokenService from './TokenService'
+import { API_RESSOURCE_URI } from '@/common/api-ressources/api.ressources.uri'
+import TokenService from './token.service'
 
 class AuthService {
     me() {

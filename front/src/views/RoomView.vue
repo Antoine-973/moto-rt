@@ -1,13 +1,12 @@
 <script setup>
-
-import SideBar from '../components/SideBar.vue'
-import { useAuthStore } from '@/stores'
+import SideBar from '@/components/SideBar.vue'
 import SideBarAdmin from '@/components/SideBarAdmin.vue'
+import RoomChat from '@/components/RoomChat.vue'
+import { useAuthStore } from '@/stores'
 
 const authStore = useAuthStore()
 const user = authStore.user;
 const isAdmin = user.role === 'ROLE_ADMIN';
-
 </script>
 
 <template>
@@ -17,8 +16,10 @@ const isAdmin = user.role === 'ROLE_ADMIN';
                 <SideBar v-if='!isAdmin'/>
                 <SideBarAdmin v-else/>
             </div>
-            <div class="col-span-10 flex flex-col w-full p-5">
-                <h1 class='text-3xl text-white'>Tableau de bord</h1>
+            <div class="col-span-10 flex flex-col w-full p-5 h-screen">
+                <Suspense>
+                    <RoomChat/>
+                </Suspense>
             </div>
         </div>
     </main>

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import AuthService from '../services/auth.service'
 import axios from 'axios'
-import TokenService from '@/services/TokenService'
+import TokenService from '@/services/token.service'
 import router from '@/router/router'
 
 const token = localStorage.getItem('token') || null

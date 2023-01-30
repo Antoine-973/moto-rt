@@ -1,12 +1,14 @@
 const { Router } = require("express");
 const { User } = require("../models");
 const { ValidationError } = require("sequelize");
+const adminRight = require("../middlewares/adminRight");
 
 const router = new Router();
 
 router.get("/users", async (req, res) => {
   try {
-    const users = await User.findAll({ where: req.query });
+    const users = await User.findAll({ where: { role: "ROLE_USER" } });
+    console.log("users", users)
     res.json(users);
   } catch (error) {
     res.sendStatus(500);
@@ -14,7 +16,7 @@ router.get("/users", async (req, res) => {
   }
 });
 
-router.post("/users", async (req, res) => {
+router.post("/users", adminRight, async (req, res) => {
   try {
     const user = await User.create(req.body);
     res.status(201).json(user);
@@ -58,7 +60,7 @@ router.put("/users/:id", async (req, res) => {
   }
 });
 
-router.delete("/users/:id", async (req, res) => {
+router.delete("/users/:id", adminRight, async (req, res) => {
   try {
     const nbLine = await User.destroy({ where: { id: req.params.id } });
     if (!nbLine) {
