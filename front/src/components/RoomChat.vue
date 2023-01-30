@@ -1,23 +1,16 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import { computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoomsStore } from '@/stores/rooms.store'
-import * as Yup from 'yup'
 import { useAlertStore, useAuthStore } from '@/stores'
-import { Field, Form } from 'vee-validate'
 import ChatMessage from '@/components/ChatMessage.vue'
 
+const message = ref("");
 const route = useRoute()
 const roomId = route.params.id
 const roomsStore = useRoomsStore()
-
 const room = computed(() => roomsStore.rooms[roomId])
-const messages = computed(() => room.value?.messages || []);
-console.log(messages.value)
-
-const schema = Yup.object().shape({
-    message: Yup.string().required('Le message est requis')
-});
+const messages = computed(() => room.value.messages || []);
 
 const alertStore = useAlertStore()
 const authStore = useAuthStore()
@@ -39,6 +32,7 @@ onMounted(() => {
     socket.on("room:joined", ({ data, errors }) => {
         if (errors) {
             for (const error of errors) {
+                console.log(error)
                 alertStore.error(error.message)
             }
 
@@ -67,16 +61,12 @@ onUnmounted(() => {
     socket.off("room:message:received");
 });
 
-const sendMessage = (values) => {
-    const { message } = values;
-
-    console.log(message)
-
+const sendMessage = () => {
     if (!message.value) {
         return;
     }
 
-    socket.emit("room:message:send", roomId, message.value);
+    socket.emit("room:message:send", +roomId, message.value);
 
     message.value = "";
 };
@@ -88,7 +78,7 @@ const sendMessage = (values) => {
         <p>{{room.description}}</p>
         <div class='bg-gray-800 rounded-lg w-full h-full mt-5 relative'>
             <div class='p-5'>
-                <div v-if="sortedMessages.length">
+                <div>
                     <ChatMessage
                         v-for="message in sortedMessages"
                         :key="message.id"
@@ -97,23 +87,16 @@ const sendMessage = (values) => {
                 </div>
             </div>
             <div class='absolute bottom-0 w-full'>
-                <Form v-slot="{ errors, isSubmitting }" :validation-schema="schema" @submit="sendMessage">
-                    <div v-if="errors.apiError" class="label-text-alt text-red-500">{{errors.apiError}}</div>
-                    <label class="label">
-                        <span class="label-text-alt text-red-500">{{ errors.message }}</span>
-                    </label>
-                    <div class='grid grid-cols-12 grid-rows-1 w-full'>
-                        <div class="col-span-11 w-full">
-                            <Field name="message" type="text" class="rounded-none input input-bordered w-full" :class="{ 'is-invalid': errors.message }" />
-                        </div>
-                        <div class="col-span-1 w-full">
-                            <button class="rounded-none btn w-full" :disabled="isSubmitting">
-                                <span v-show="isSubmitting" class="spinner-border spinner-border-sm mr-1"></span>
-                                Envoyer
-                            </button>
-                        </div>
+                <div class='grid grid-cols-12 grid-rows-1 w-full'>
+                    <div class="col-span-11 w-full">
+                        <input v-model.trim='message' class="rounded-none input input-bordered w-full" autofocus type="text" @keyup.enter="sendMessage" />
                     </div>
-                </Form>
+                    <div class="col-span-1 w-full">
+                        <button class="rounded-none btn w-full" @click="sendMessage">
+                            Envoyer
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

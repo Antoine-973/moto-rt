@@ -51,31 +51,19 @@ Room.init(
         sequelize: connection,
         modelName: 'room',
         paranoid: true,
+        scopes: {
+            withMessages: {
+                attributes: {
+                    exclude: ['deletedAt', 'updatedAt'],
+                },
+                include: {
+                    association: 'messages',
+                    order: [['createdAt', 'DESC']],
+                }
+            }
+        }
     }
 )
-
-Room.associate = (models) => {
-    Room.belongsToMany(models.User, {
-        through: 'user_room',
-        as: 'users',
-        foreignKey: 'roomId',
-    })
-
-    Room.hasMany(models.Message, {
-        as: 'messages',
-        foreignKey: 'roomId',
-    })
-}
-
-Room.addScope('withMessages', {
-    attributes: {
-        exclude: ['deletedAt', 'updatedAt'],
-    },
-    include: {
-        association: 'messages',
-        order: [['createdAt', 'DESC']],
-    },
-})
 
 Room.seed = async () => {
     await Room.bulkCreate([

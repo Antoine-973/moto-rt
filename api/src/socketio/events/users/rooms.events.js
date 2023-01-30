@@ -25,31 +25,31 @@ const roomsEvents = (socket, io) => {
     const onJoin = async (roomId) => {
         console.log('[socket.io]: room:join', roomId)
 
-        const room = Room.scope('withMessages').findByPk(roomId)
+        Room.scope('withMessages').findByPk(roomId).then(async (room) => {
+            if (!room) {
+                throw new Error('Room not found')
+            }
 
-        if (!room) {
-            throw new Error('Room not found')
-        }
+            const sockets = await io.in(`room:${room.id}`).fetchSockets()
 
-        const sockets = await io.in(`room:${room.id}`).fetchSockets()
+            const uniqueUserIds = new Set(sockets.map(({ data }) => data.user.id))
 
-        const uniqueUserIds = new Set(sockets.map(({ data }) => data.user.id))
+            const isUserInRoom = uniqueUserIds.has(socket.data.user.id)
 
-        const isUserInRoom = uniqueUserIds.has(socket.data.user.id)
+            const isRoomFull = uniqueUserIds.size >= room.limit
 
-        const isRoomFull = uniqueUserIds.size >= room.limit
+            if (
+                socket.data.user.role !== 'ROLE_ADMIN' &&
+                !isUserInRoom &&
+                isRoomFull
+            ) {
+                throw new Error('Room is full')
+            }
 
-        if (
-            socket.data.user.role !== 'ROLE_ADMIN' &&
-            !isUserInRoom &&
-            isRoomFull
-        ) {
-            throw new Error('Room is full')
-        }
+            socket.join(`room:${roomId}`)
 
-        socket.join(`room:${roomId}`)
-
-        socket.emit('room:joined', { data: { room } })
+            socket.emit('room:joined', { data: { room } })
+        })
     }
 
     const onLeave = async (roomId) => {

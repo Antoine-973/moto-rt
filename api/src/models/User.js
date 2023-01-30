@@ -53,18 +53,18 @@ User.init(
             withoutPassword: {
                 attributes: { exclude: ['password'] },
             },
-            // withMessages: {
-            //     attributes: ['id', 'username'],
-            //     include: 'messages',
-            // },
-            // withConversations: {
-            //     attributes: ['id', 'username'],
-            //     include: ['senderConversations', 'receiverConversations'],
-            // },
-            // withRooms: {
-            //     attributes: ['id', 'username'],
-            //     include: { association: 'rooms', through: { attributes: [] } },
-            // },
+            withMessages: {
+                attributes: ['id', 'username'],
+                include: 'messages',
+            },
+            withConversations: {
+                attributes: ['id', 'username'],
+                include: ['senderConversations', 'receiverConversations'],
+            },
+            withRooms: {
+                attributes: ['id', 'username'],
+                include: { association: 'rooms', through: { attributes: [] } },
+            },
         },
     }
 )
@@ -81,29 +81,6 @@ User.addHook('beforeUpdate', async (user, { fields }) => {
         )
     }
 })
-
-User.associate = (models) => {
-    User.hasMany(models.Message, {
-        as: 'messages',
-        foreignKey: 'userId',
-    })
-
-    User.hasMany(models.Conversation, {
-        as: 'senderConversations',
-        foreignKey: 'senderId',
-    })
-
-    User.hasMany(models.Conversation, {
-        as: 'receiverConversations',
-        foreignKey: 'receiverId',
-    })
-
-    User.belongsToMany(models.Room, {
-        through: 'user_room',
-        as: 'rooms',
-        foreignKey: 'userId',
-    })
-}
 
 User.seed = async () => {
     await User.bulkCreate([

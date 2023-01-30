@@ -41,11 +41,11 @@ const roomsEvents = (socket, io) => {
             where: {
                 id,
             },
+        }).then(() => {
+            io.emit('roomDeleted', deletedRoom)
+
+            io.of('/').emit('roomDeleted', deletedRoom)
         })
-
-        io.emit('roomDeleted', deletedRoom)
-
-        io.of('/').emit('roomDeleted', deletedRoom)
     }
 
     async function restoreRoom(id) {

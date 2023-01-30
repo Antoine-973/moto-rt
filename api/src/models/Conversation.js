@@ -30,27 +30,6 @@ Conversation.init(
     }
 )
 
-Conversation.associate = (models) => {
-    Conversation.hasMany(models.Message, {
-        as: 'messages',
-        foreignKey: 'conversationId',
-    })
-    Conversation.belongsTo(models.User, {
-        as: 'sender',
-        foreignKey: {
-            name: 'senderId',
-            allowNull: false,
-        },
-    })
-    Conversation.belongsTo(models.User, {
-        as: 'receiver',
-        foreignKey: {
-            name: 'receiverId',
-            allowNull: false,
-        },
-    })
-}
-
 Conversation.addScope('withMessages', {
     attributes: {
         exclude: ['deletedAt', 'updatedAt'],

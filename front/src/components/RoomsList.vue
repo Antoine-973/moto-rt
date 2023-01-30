@@ -3,11 +3,13 @@ import { useRoomsStore } from '@/stores/rooms.store'
 import { useAlertStore, useAuthStore } from '@/stores'
 import NewRoomModal from '@/components/NewRoomModal.vue'
 import { onMounted } from 'vue'
+import EditRoomModal from '@/components/EditRoomModal.vue'
 
 const authStore = useAuthStore()
 const alertStore = useAlertStore()
 const roomsStore = useRoomsStore()
 const socket = authStore.socket
+const adminSocket = authStore.adminSocket
 
 onMounted(() => {
     socket.emit("rooms");
@@ -26,6 +28,10 @@ onMounted(() => {
 });
 const rooms = roomsStore.rooms
 const user = authStore.user
+
+const deleteRoom = (roomId) => {
+    adminSocket.emit("room:delete", roomId);
+}
 </script>
 
 <template>
@@ -35,9 +41,17 @@ const user = authStore.user
                 <div class="card-body">
                     <h2 class="card-title">{{room.name}}</h2>
                     <p>{{room.description}}</p>
-                    <div class="card-actions justify-end">
+                    <div class="mt-5 card-actions justify-center">
                         <router-link class="btn" :to='{name: "RoomView", params: {id: room.id}}'>Rejoindre</router-link>
                     </div>
+                </div>
+            </div>
+            <div class='mt-5 flex justify-between'>
+                <div v-if='user.role === "ROLE_ADMIN"'>
+                    <EditRoomModal/>
+                </div>
+                <div v-if='user.role === "ROLE_ADMIN"'>
+                    <button class='btn btn-error' @click='deleteRoom(room.id)'>Supprimer</button>
                 </div>
             </div>
         </div>

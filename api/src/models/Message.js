@@ -34,22 +34,4 @@ Message.init(
     }
 )
 
-Message.associate = (models) => {
-    Message.belongsTo(models.User, {
-        as: 'user',
-        foreignKey: {
-            name: 'userId',
-            allowNull: false,
-        },
-    })
-    Message.belongsTo(models.Conversation, {
-        as: 'conversation',
-        foreignKey: 'conversationId',
-    })
-    Message.belongsTo(models.Room, {
-        as: 'room',
-        foreignKey: 'roomId',
-    })
-}
-
 module.exports = Message
