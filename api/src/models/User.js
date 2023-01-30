@@ -7,6 +7,11 @@ class User extends Model {}
 
 User.init(
     {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
         username: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -34,6 +39,11 @@ User.init(
             allowNull: false,
             defaultValue: false,
         },
+        status: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: 'online',
+        },
     },
     {
         sequelize: connection,
@@ -43,6 +53,18 @@ User.init(
             withoutPassword: {
                 attributes: { exclude: ['password'] },
             },
+            // withMessages: {
+            //     attributes: ['id', 'username'],
+            //     include: 'messages',
+            // },
+            // withConversations: {
+            //     attributes: ['id', 'username'],
+            //     include: ['senderConversations', 'receiverConversations'],
+            // },
+            // withRooms: {
+            //     attributes: ['id', 'username'],
+            //     include: { association: 'rooms', through: { attributes: [] } },
+            // },
         },
     }
 )
@@ -62,26 +84,26 @@ User.addHook('beforeUpdate', async (user, { fields }) => {
 
 User.associate = (models) => {
     User.hasMany(models.Message, {
-        as: "messages",
-        foreignKey: "userId",
-    });
+        as: 'messages',
+        foreignKey: 'userId',
+    })
 
     User.hasMany(models.Conversation, {
-        as: "senderConversations",
-        foreignKey: "senderId",
-    });
+        as: 'senderConversations',
+        foreignKey: 'senderId',
+    })
 
     User.hasMany(models.Conversation, {
-        as: "receiverConversations",
-        foreignKey: "receiverId",
-    });
+        as: 'receiverConversations',
+        foreignKey: 'receiverId',
+    })
 
     User.belongsToMany(models.Room, {
-        through: "user_room",
-        as: "rooms",
-        foreignKey: "userId",
-    });
-};
+        through: 'user_room',
+        as: 'rooms',
+        foreignKey: 'userId',
+    })
+}
 
 User.seed = async () => {
     await User.bulkCreate([
@@ -150,4 +172,5 @@ User.seed = async () => {
         },
     ])
 }
+
 module.exports = User

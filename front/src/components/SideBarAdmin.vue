@@ -1,7 +1,7 @@
 <script setup>
-    import { useAuthStore } from '@/stores'
+import { useAuthStore } from '@/stores'
 
-    const authStore = useAuthStore()
+const authStore = useAuthStore()
     const user = authStore.user
 </script>
 

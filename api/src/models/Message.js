@@ -5,6 +5,11 @@ class Message extends Model {}
 
 Message.init(
     {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
         text: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -35,7 +40,7 @@ Message.associate = (models) => {
         foreignKey: {
             name: 'userId',
             allowNull: false,
-        }
+        },
     })
     Message.belongsTo(models.Conversation, {
         as: 'conversation',

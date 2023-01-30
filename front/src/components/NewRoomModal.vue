@@ -1,12 +1,12 @@
 <script setup>
-    import { Field, Form } from 'vee-validate'
-    import * as Yup from 'yup'
+import { Field, Form } from 'vee-validate'
+import * as Yup from 'yup'
 
-    import { useAlertStore } from '../stores'
-    import { useRouter } from 'vue-router'
-    import { useRoomsStore } from '@/stores/rooms.store'
+import { useAlertStore } from '../stores'
+import { useRouter } from 'vue-router'
+import RoomsService from '@/services/rooms.service'
 
-    const router = useRouter();
+const router = useRouter();
 
     const schema = Yup.object().shape({
         name: Yup.string()
@@ -21,10 +21,15 @@
             .max(255, 'La description de la salle ne doit pas dépasser 255 caractères')
     });
 
+    const createRoom = async (room) => {
+        return RoomsService.createRoom(room).then((response) => {
+            return response.data;
+        })
+    }
+
     async function onSubmit(values, { setErrors } ) {
-        const roomsStore = useRoomsStore();
         const alertStore = useAlertStore();
-        await roomsStore.createRoom(values).then(async () => {
+        createRoom(values).then(async () => {
             await router.push('/rooms').then(() => {
                 alertStore.success("Salle créée avec succès !");
             }
@@ -34,9 +39,9 @@
 </script>
 
 <template>
-    <label for="my-modal-4" class="btn">Créer une salle</label>
+    <label for="my-modal-4" class="btn w-full h-full">Créer une salle</label>
 
-    <input type="checkbox" id="my-modal-4" class="modal-toggle" />
+    <input id="my-modal-4" type="checkbox" class="modal-toggle" />
     <label for="my-modal-4" class="modal cursor-pointer">
         <label class="modal-box relative flex flex-col items-center" for="">
             <h2 class="card-title">Création d'une salle de discussion</h2>

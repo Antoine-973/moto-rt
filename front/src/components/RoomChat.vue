@@ -1,34 +1,85 @@
 <script setup>
-import { useRoute, useRouter } from 'vue-router'
-import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useRoomsStore } from '@/stores/rooms.store'
 import * as Yup from 'yup'
-import { useAuthStore } from '@/stores'
-import { Form, Field } from 'vee-validate';
+import { useAlertStore, useAuthStore } from '@/stores'
+import { Field, Form } from 'vee-validate'
+import ChatMessage from '@/components/ChatMessage.vue'
 
 const route = useRoute()
 const roomId = route.params.id
 const roomsStore = useRoomsStore()
 
-onMounted(await roomsStore.getRoom(roomId).then(async () => {
-    console.log('Room loaded')
-}))
-
-const room = roomsStore.currentRoom;
+const room = computed(() => roomsStore.rooms[roomId])
+const messages = computed(() => room.value?.messages || []);
+console.log(messages.value)
 
 const schema = Yup.object().shape({
     message: Yup.string().required('Le message est requis')
 });
 
+const alertStore = useAlertStore()
 const authStore = useAuthStore()
-const router = useRouter()
+const socket = authStore.socket
 
-function onSubmit(values, { setErrors }) {
-    const { email, password } = values;
-    return authStore.login(email, password)
-        .then(() => router.push({ name: 'HomeView' }))
-        .catch(error => setErrors({ apiError: error.response.data.message }));
-}
+const sortedMessages = computed(() =>
+    messages.value.slice().sort((a, b) => {
+        if (new Date(a.createdAt) > new Date(b.createdAt)) {
+            return 1;
+        }
+
+        return -1;
+    })
+);
+
+onMounted(() => {
+    socket.emit("room:join", roomId);
+
+    socket.on("room:joined", ({ data, errors }) => {
+        if (errors) {
+            for (const error of errors) {
+                alertStore.error(error.message)
+            }
+
+            return;
+        }
+
+        roomsStore.updateRoom(data.room);
+    });
+
+    socket.on("room:message:received", ({ data, errors }) => {
+        if (errors) {
+            for (const error of errors) {
+                alertStore.error(error.message)
+            }
+
+            return;
+        }
+
+        roomsStore.addMessage(roomId, data.message);
+    });
+});
+
+onUnmounted(() => {
+    socket.emit("room:leave", roomId);
+    socket.off("room:joined");
+    socket.off("room:message:received");
+});
+
+const sendMessage = (values) => {
+    const { message } = values;
+
+    console.log(message)
+
+    if (!message.value) {
+        return;
+    }
+
+    socket.emit("room:message:send", roomId, message.value);
+
+    message.value = "";
+};
 </script>
 
 <template>
@@ -37,39 +88,16 @@ function onSubmit(values, { setErrors }) {
         <p>{{room.description}}</p>
         <div class='bg-gray-800 rounded-lg w-full h-full mt-5 relative'>
             <div class='p-5'>
-            <div class="chat chat-start">
-                <div class="chat-bubble">It's over Anakin, <br/>I have the high ground.</div>
-            </div>
-            <div class="chat chat-end">
-                <div class="chat-bubble">You underestimate my power!</div>
-            </div>
-            <div class="chat chat-start">
-                <div class="chat-bubble">It's over Anakin, <br/>I have the high ground.</div>
-            </div>
-            <div class="chat chat-end">
-                <div class="chat-bubble">You underestimate my power!</div>
-            </div>
-            <div class="chat chat-start">
-                <div class="chat-bubble">It's over Anakin, <br/>I have the high ground.</div>
-            </div>
-            <div class="chat chat-end">
-                <div class="chat-bubble">You underestimate my power!</div>
-            </div>
-            <div class="chat chat-start">
-                <div class="chat-bubble">It's over Anakin, <br/>I have the high ground.</div>
-            </div>
-            <div class="chat chat-end">
-                <div class="chat-bubble">You underestimate my power!</div>
-            </div>
-            <div class="chat chat-start">
-                <div class="chat-bubble">It's over Anakin, <br/>I have the high ground.</div>
-            </div>
-            <div class="chat chat-end">
-                <div class="chat-bubble">You underestimate my power!</div>
-            </div>
+                <div v-if="sortedMessages.length">
+                    <ChatMessage
+                        v-for="message in sortedMessages"
+                        :key="message.id"
+                        :message="message"
+                    />
+                </div>
             </div>
             <div class='absolute bottom-0 w-full'>
-                <Form v-slot="{ errors, isSubmitting }" :validation-schema="schema" @submit="onSubmit">
+                <Form v-slot="{ errors, isSubmitting }" :validation-schema="schema" @submit="sendMessage">
                     <div v-if="errors.apiError" class="label-text-alt text-red-500">{{errors.apiError}}</div>
                     <label class="label">
                         <span class="label-text-alt text-red-500">{{ errors.message }}</span>

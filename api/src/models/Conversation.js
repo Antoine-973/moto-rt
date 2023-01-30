@@ -1,10 +1,15 @@
-const {Model, DataTypes} = require('sequelize');
-const connection = require('./db');
+const { Model, DataTypes } = require('sequelize')
+const connection = require('./db')
 
 class Conversation extends Model {}
 
 Conversation.init(
-{
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
         senderId: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -19,11 +24,11 @@ Conversation.init(
         modelName: 'conversation',
         paranoid: true,
         defaultScope: {
-            attributes: {exclude: ["deletedAt", "updatedAt"]},
-            include: ["sender", "receiver"],
-        }
+            attributes: { exclude: ['deletedAt', 'updatedAt'] },
+            include: ['sender', 'receiver'],
+        },
     }
-);
+)
 
 Conversation.associate = (models) => {
     Conversation.hasMany(models.Message, {
@@ -35,22 +40,22 @@ Conversation.associate = (models) => {
         foreignKey: {
             name: 'senderId',
             allowNull: false,
-        }
+        },
     })
     Conversation.belongsTo(models.User, {
         as: 'receiver',
         foreignKey: {
             name: 'receiverId',
             allowNull: false,
-        }
+        },
     })
 }
 
-Conversation.addScope("withMessages", {
+Conversation.addScope('withMessages', {
     attributes: {
-        exclude: ["deletedAt", "updatedAt"],
+        exclude: ['deletedAt', 'updatedAt'],
     },
-    include: ["sender", "receiver", "messages"],
-});
+    include: ['sender', 'receiver', 'messages'],
+})
 
-module.exports = Conversation;
+module.exports = Conversation

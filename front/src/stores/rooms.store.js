@@ -1,61 +1,35 @@
-import { defineStore } from 'pinia';
-import RoomsService from '@/services/rooms.service'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-export const useRoomsStore = defineStore({
-    id: 'rooms',
-    state: () => ({
-        rooms: [],
-        currentRoom: null,
+export const useRoomsStore = defineStore('rooms', () => {
+    const rooms = ref({})
+
+    const updateRooms = (newRooms) => {
+        rooms.value = newRooms.reduce((accumulator, room) => {
+            const existingRoom = accumulator[room.id]
+
+            if (existingRoom) {
+                accumulator[room.id] = { ...existingRoom, ...room }
+            } else {
+                accumulator[room.id] = { messages: [], users: [], ...room }
+            }
+
+            return accumulator
+        }, rooms.value)
     }
-    ),
-    actions: {
-        async getRooms() {
-            return RoomsService.getRooms().then(
-                (response) => {
-                    this.rooms = response
-                    return Promise.resolve(response)
-                },
-                (error) => {
-                    return Promise.reject(error)
-                }
-            )
-        },
-        async getRoom(id) {
-            return RoomsService.getRoom(id).then(
-                (response) => {
-                    this.currentRoom = response
-                    return Promise.resolve(response)
-                },
-                (error) => {
-                    return Promise.reject(error)
-                }
-            )
-        },
-        async createRoom(room) {
-            return RoomsService.createRoom(room).then(
-                (response) => {
-                    this.rooms.push(response.data)
-                    return Promise.resolve(response.data)
-                }
-            )
-        },
-        async updateRoom(room) {
-            return RoomsService.updateRoom(room).then(
-                (response) => {
-                    const index = this.rooms.findIndex((r) => r.id === room.id)
-                    this.rooms[index] = response.data
-                    return Promise.resolve(response.data)
-                }
-            )
-        },
-        async deleteRoom(id) {
-            return RoomsService.deleteRoom(id).then(
-                (response) => {
-                    const index = this.rooms.findIndex((r) => r.id === id)
-                    this.rooms.splice(index, 1)
-                    return Promise.resolve(response.data)
-                }
-            )
-        }
+
+    const updateRoom = (newRoom) => {
+        rooms.value[newRoom.id] = { ...rooms.value[newRoom.id], ...newRoom }
     }
-});
+
+    const addMessage = (roomId, message) => {
+        rooms.value[roomId]?.messages?.push(message)
+    }
+
+    return {
+        rooms,
+        updateRooms,
+        updateRoom,
+        addMessage,
+    }
+})

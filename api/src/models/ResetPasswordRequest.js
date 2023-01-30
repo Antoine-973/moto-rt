@@ -1,11 +1,15 @@
-const { Model, DataTypes } = require("sequelize");
-const connection = require("./db");
-const bcryptjs = require("bcryptjs");
+const { Model, DataTypes } = require('sequelize')
+const connection = require('./db')
 
 class ResetPasswordRequest extends Model {}
 
 ResetPasswordRequest.init(
     {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
         userId: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -17,9 +21,9 @@ ResetPasswordRequest.init(
     },
     {
         sequelize: connection,
-        modelName: "resetPasswordRequest",
+        modelName: 'resetPasswordRequest',
         paranoid: true,
     }
-);
+)
 
-module.exports = ResetPasswordRequest;
+module.exports = ResetPasswordRequest

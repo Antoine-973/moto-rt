@@ -37,7 +37,7 @@ const router = createRouter({
             component: DashboardView,
         },
         {
-            path: '/customers',
+            path: '/users',
             name: 'CustomersView',
             meta: { role: 'ROLE_USER' },
             component: CustomersView,
