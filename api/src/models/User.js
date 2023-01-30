@@ -7,6 +7,11 @@ class User extends Model {}
 
 User.init(
     {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
         username: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -34,6 +39,11 @@ User.init(
             allowNull: false,
             defaultValue: false,
         },
+        status: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: 'online',
+        },
     },
     {
         sequelize: connection,
@@ -42,6 +52,18 @@ User.init(
         scopes: {
             withoutPassword: {
                 attributes: { exclude: ['password'] },
+            },
+            withMessages: {
+                attributes: ['id', 'username'],
+                include: 'messages',
+            },
+            withConversations: {
+                attributes: ['id', 'username'],
+                include: ['senderConversations', 'receiverConversations'],
+            },
+            withRooms: {
+                attributes: ['id', 'username'],
+                include: { association: 'rooms', through: { attributes: [] } },
             },
         },
     }
@@ -127,4 +149,5 @@ User.seed = async () => {
         },
     ])
 }
+
 module.exports = User

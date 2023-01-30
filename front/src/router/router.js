@@ -5,6 +5,9 @@ import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import ConfirmAccountView from '../views/ConfirmAccountView.vue'
 import { useAuthStore } from '@/stores'
+import RoomsView from '../views/RoomsView.vue'
+import RoomView from '@/views/RoomView.vue'
+import CustomersView from '@/views/CustomersView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,8 +37,27 @@ const router = createRouter({
             component: DashboardView,
         },
         {
+            path: '/users',
+            name: 'CustomersView',
+            meta: { role: 'ROLE_USER' },
+            component: CustomersView,
+        },
+        {
+            path: '/rooms',
+            name: 'RoomsView',
+            meta: { role: 'ROLE_USER' },
+            component: RoomsView,
+        },
+        {
+            path: '/rooms/:id',
+            name: 'RoomView',
+            meta: { role: 'ROLE_USER' },
+            component: RoomView,
+            params: true,
+        },
+        {
             path: '/confirm/:token',
-            name: 'ConfirmAccountView.vue',
+            name: 'ConfirmAccountView',
             meta: { role: 'Guest' },
             component: ConfirmAccountView,
         },

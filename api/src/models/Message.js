@@ -1,29 +1,37 @@
 const { Model, DataTypes } = require('sequelize')
 const connection = require('./db')
 
-class ResetPasswordRequest extends Model {}
+class Message extends Model {}
 
-ResetPasswordRequest.init(
+Message.init(
     {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
+        text: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         userId: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        token: {
-            type: DataTypes.STRING,
-            allowNull: false,
+        conversationId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+        },
+        roomId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
         },
     },
     {
         sequelize: connection,
-        modelName: 'resetPasswordRequest',
+        modelName: 'message',
         paranoid: true,
     }
 )
 
-module.exports = ResetPasswordRequest
+module.exports = Message

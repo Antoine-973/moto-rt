@@ -21,6 +21,7 @@ exports.decodeToken = (token) => {
             role: decoded.role,
         }
     } catch (error) {
-        return null
+        console.log(error)
+        return false
     }
 }

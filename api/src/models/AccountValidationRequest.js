@@ -1,11 +1,16 @@
-const {Model, DataTypes} = require('sequelize');
-const connection = require('./db');
-const bcryptjs = require('bcryptjs');
+const { Model, DataTypes } = require('sequelize')
+const connection = require('./db')
+const bcryptjs = require('bcryptjs')
 
 class AccountValidationRequest extends Model {}
 
 AccountValidationRequest.init(
     {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
         userId: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -18,8 +23,8 @@ AccountValidationRequest.init(
     {
         sequelize: connection,
         modelName: 'accountValidationRequest',
-        paranoid: true
+        paranoid: true,
     }
-);
+)
 
-module.exports = AccountValidationRequest;
+module.exports = AccountValidationRequest

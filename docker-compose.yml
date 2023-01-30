@@ -6,29 +6,29 @@ services:
     depends_on:
       - postgres
     ports:
-      - "8080:8080"
+      - "3000:3000"
     volumes:
       - ./api:/home/node/api
 #      - /home/node/api/node_modules
     working_dir: /home/node/api
     environment:
-      - PORT=8080
+      - PORT=3000
       - DATABASE_URL=postgres://root:password@postgres/app
       - JWT_SECRET=secret
-    container_name: moto-rc-api
+    container_name: moto-rt-api
     command: sh -c "npm install && npm run dev"
 
   vue:
     image: node:lts-alpine
     ports:
-      - "3000:3000"
+      - "80:80"
     volumes:
       - ./front:/home/node/front
 #      - /home/node/front/node_modules
     working_dir: /home/node/front
-    container_name: moto-rc-front
+    container_name: moto-rt-front
     environment:
-      - PORT=3000
+      - PORT=80
     command: sh -c "npm install && npm run dev"
 
   postgres:

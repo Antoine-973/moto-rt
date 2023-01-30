@@ -5,7 +5,7 @@
   "author": "Antoine Saunier <antoine.saunier.pro@gmail.com>",
   "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon src/server.js localhost 8080",
+    "dev": "DEBUG=socket* nodemon src/server.js localhost 8080",
     "migrate": "node ./migrate.js",
     "seed": "node ./seed.js"
   },
@@ -21,6 +21,7 @@
     "nodemailer": "^6.9.0",
     "pg": "^8.8.0",
     "sequelize": "^6.28.0",
+    "socket.io": "^4.5.4",
     "winston": "^3.8.2"
   },
   "devDependencies": {
