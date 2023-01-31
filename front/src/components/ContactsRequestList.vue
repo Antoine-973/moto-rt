@@ -115,7 +115,7 @@ const onRefuseContact = (contactsId) => {
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="contact in contacts.value" :key="contact.id">
+                <tr v-for="contact in contacts" :key="contact.id">
                     <td>{{ contact.user.username }}</td>
                     <td>{{ contact.user.email }}</td>
                     <td>{{ contact.status }}</td>
