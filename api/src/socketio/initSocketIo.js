@@ -4,6 +4,7 @@ const initAdminEvents = require('./events/admin')
 const roomsEvents = require('./events/users/rooms.events')
 const usersEvents = require('./events/users/users.events')
 const conversationsEvents = require('./events/users/conversations.events')
+const contactsEvents = require('./events/users/contact.requests.events')
 
 module.exports = (server) => {
     const io = new Server(server, {
@@ -30,6 +31,7 @@ module.exports = (server) => {
         roomsEvents(socket, io)
         usersEvents(socket, io)
         conversationsEvents(socket, io)
+        contactsEvents(socket, io)
 
         function onDisconnect() {
             console.log('[socket.io]: Client disconnected')

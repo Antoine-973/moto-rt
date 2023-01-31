@@ -2,8 +2,9 @@
 import { useRoute } from 'vue-router'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoomsStore } from '@/stores/rooms.store'
-import { useAlertStore, useAuthStore } from '@/stores'
+import { useAuthStore } from '@/stores'
 import ChatMessage from '@/components/ChatMessage.vue'
+import { toast } from 'vue3-toastify'
 
 const message = ref("");
 const route = useRoute()
@@ -12,7 +13,6 @@ const roomsStore = useRoomsStore()
 const room = computed(() => roomsStore.rooms[roomId])
 const messages = computed(() => room.value.messages || []);
 
-const alertStore = useAlertStore()
 const authStore = useAuthStore()
 const socket = authStore.socket
 
@@ -32,8 +32,10 @@ onMounted(() => {
     socket.on("room:joined", ({ data, errors }) => {
         if (errors) {
             for (const error of errors) {
-                console.log(error)
-                alertStore.error(error.message)
+                toast.error(error.message, {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                    autoClose: 3000,
+                });
             }
 
             return;
@@ -45,7 +47,10 @@ onMounted(() => {
     socket.on("room:message:received", ({ data, errors }) => {
         if (errors) {
             for (const error of errors) {
-                alertStore.error(error.message)
+                toast.error(error.message, {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                    autoClose: 3000,
+                });
             }
 
             return;

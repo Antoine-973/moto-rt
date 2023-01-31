@@ -2,13 +2,13 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import ChatMessage from './ChatMessage.vue'
 import { useConversationsStore } from '@/stores/conversations.store'
-import { useAlertStore, useAuthStore } from '@/stores'
+import { useAuthStore } from '@/stores'
 import { useRoute } from 'vue-router'
+import { toast } from 'vue3-toastify'
 
 const route = useRoute()
 const conversationId = route.params.id
 const conversationStore = useConversationsStore()
-const alertStore = useAlertStore()
 const authStore = useAuthStore();
 const conversation = computed(() => conversationStore.conversations[conversationId]);
 const message = ref("");
@@ -41,7 +41,10 @@ onMounted(() => {
     socket.on("conversation", ({ data, errors }) => {
         if (errors) {
             for (const error of errors) {
-                alertStore.error(error.message)
+                toast.error(error.message, {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                    autoClose: 3000,
+                });
             }
             return;
         }
@@ -52,7 +55,10 @@ onMounted(() => {
     socket.on("conversation:message:received", async ({ data, errors }) => {
         if (errors) {
             for (const error of errors) {
-                alertStore.error(error.message)
+                toast.error(error.message, {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                    autoClose: 3000,
+                });
             }
 
             return;
