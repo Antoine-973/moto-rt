@@ -31,13 +31,16 @@ const onSubmit = async () => {
             </div>
             <div class="col-span-10 flex flex-col w-full p-5">
                 <h1 class='text-3xl text-white'>Envoi d'une notification commerciale</h1>
-                <form class='flex' @submit.prevent="onSubmit">
-                    <div>
-                        <label for="message">Message commerciale</label>
-                        <input id="message" v-model="message" type="text" class="input input-bordered w-full max-w-xs" required>
-                    </div>
-                    <button class="btn" type="submit">Envoyer</button>
-                </form>
+                <div class='p-5'>
+                    <form class='grid grid-cols-12 grid-rows-1' @submit.prevent="onSubmit">
+                        <div class="col-span-10">
+                            <input v-model='message' class="rounded-none input input-bordered w-full" autofocus required type="text" />
+                        </div>
+                        <div class="col-span-2">
+                            <button class="rounded-none btn w-full" type="submit">Envoyer</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </main>
