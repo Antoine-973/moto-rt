@@ -77,8 +77,8 @@ const contactsEvents = (socket, io) => {
     }
 
     const onContacts = async () => {
-        const contacts = await Contact.findAll({
-            order: [["createdAt", "DESC"]],
+        const contacts = await Contact.scope('withUser').findAll({
+            order: [['createdAt', 'DESC']],
         });
 
         socket.emit("contacts", { data: { contacts } });
