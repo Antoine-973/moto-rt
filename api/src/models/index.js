@@ -30,4 +30,4 @@ exports.Room.belongsToMany(exports.User, {
     onDelete: 'CASCADE'
 })
 exports.Contact.belongsTo(exports.User, { foreignKey: 'userId', as:"user" })
-exports.User.hasMany(exports.Contact, { foreignKey: 'userId', as:"contactRequests" })
+exports.User.hasMany(exports.Contact, { foreignKey: 'userId', as:"contacts" })

@@ -35,10 +35,10 @@ onMounted(() => {
 
         const { conversation, contacts } = data;
         const { status, id } = contacts;
-        const storeContactRequest = contacts.value[id];
+        const storeContact = contacts.value[id];
 
-        if (storeContactRequest) {
-            storeContactRequest.status = status;
+        if (storeContact) {
+            storeContact.status = status;
         }
 
         toast.success("Demande accepté, cliquez ici pour aller à la conversation", {
