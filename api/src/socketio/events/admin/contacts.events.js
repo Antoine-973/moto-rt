@@ -1,8 +1,7 @@
 const { Contact, Conversation } = require('../../../models')
-const Room = require('../../../models/Room')
 
 
-const contactsEvents = (io, socket) => {
+const contactsEvents = (socket, io) => {
 
     const onContactAccept = async(contactId) => {
         if (typeof contactId !== "number") {

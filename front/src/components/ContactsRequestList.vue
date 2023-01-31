@@ -13,7 +13,6 @@ onMounted(() => {
     adminSocket.emit("contacts");
 
     adminSocket.on("contacts", ({ data, errors }) => {
-        console.log('dvuzad')
         if (errors) {
             for (const error of errors) {
                 toast.error(error.message);
