@@ -20,6 +20,6 @@ const authStore = useAuthStore()
             <router-link class="btn w-full bg-gray-900 border-0" to='/'>Demande de communication</router-link>
             <router-link class="btn w-full bg-gray-900 border-0" to='/rooms'>Salons de discussions</router-link>
             <router-link class="btn w-full bg-gray-900 border-0" to='/conversations'>Mes conversations</router-link>
-            <router-link class="btn w-full bg-gray-900 border-0" to='/'>Button</router-link>
+            <router-link class="btn w-full bg-gray-900 border-0" to='/notification'>Notification</router-link>
         </div>
 </template>

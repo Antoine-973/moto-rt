@@ -4,12 +4,14 @@ const express = require('express')
 const RoomsRouter = require('./routes/rooms')
 const UsersRouter = require('./routes/users')
 const SecurityRouter = require('./routes/security')
+const SseRouter = require('./routes/sse')
 const verifyToken = require('./middlewares/verifyToken')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const app = express()
 const logger = require('./lib/logger')
 const initSocketIo = require('./socketio/initSocketIo')
+const sse = require('./middlewares/sse')
 require('dotenv').config()
 
 app.use(express.json())
@@ -26,9 +28,11 @@ const corsOptions = {
     credentials: true,
 }
 app.use(cors(corsOptions))
-
+app.use(sse())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use('/api', SseRouter)
 
 app.use('/api', SecurityRouter)
 

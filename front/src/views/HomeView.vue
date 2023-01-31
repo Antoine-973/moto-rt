@@ -1,6 +1,19 @@
 <script setup>
 import HomeCarousel from '../components/HomeCarousel.vue'
 import AppNavbar from '../components/AppNavbar.vue'
+import { useAuthStore } from '@/stores'
+
+const authStore = useAuthStore()
+
+const guestUser = {
+    id: 0,
+    name: 'Guest',
+    role: 'ROLE_GUEST',
+}
+
+if (!authStore.user) {
+    authStore.user = guestUser
+}
 </script>
 
 <template>

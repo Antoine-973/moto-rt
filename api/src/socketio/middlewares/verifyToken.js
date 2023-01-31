@@ -1,5 +1,6 @@
 const { decodeToken } = require('../../lib/jwt')
 const { User } = require('../../models')
+const sse = require('../../middlewares/sse')
 
 module.exports = (socket, next) => {
     const token = socket.handshake.auth

@@ -2,8 +2,9 @@
 import { Field, Form } from 'vee-validate'
 import * as Yup from 'yup'
 
-import { useAlertStore, useAuthStore } from '../stores'
+import { useAuthStore } from '../stores'
 import { useRouter } from 'vue-router'
+import { toast } from 'vue3-toastify'
 
 const router = useRouter();
 
@@ -20,10 +21,12 @@ const schema = Yup.object().shape({
 
 async function onSubmit(values, { setErrors } ) {
     const authStore = useAuthStore();
-    const alertStore = useAlertStore();
     await authStore.register(values).then(async () => {
         await router.push('/login').then(() => {
-            alertStore.success("Inscription réussie veuillez valider votre compte via l'émail que nous venons de vous envoyer !");
+            toast.success("Inscription réussie veuillez valider votre compte via l'émail que nous venons de vous envoyer !", {
+                position: toast.POSITION.BOTTOM_LEFT,
+                autoClose: 3000,
+            })
         }
         );
     }).catch(error => setErrors({ apiError: error.response.data.message }));

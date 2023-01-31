@@ -1,12 +1,12 @@
 <script setup>
 import { useRoomsStore } from '@/stores/rooms.store'
-import { useAlertStore, useAuthStore } from '@/stores'
+import { useAuthStore } from '@/stores'
 import NewRoomModal from '@/components/NewRoomModal.vue'
 import { onMounted } from 'vue'
 import EditRoomModal from '@/components/EditRoomModal.vue'
+import { toast } from 'vue3-toastify'
 
 const authStore = useAuthStore()
-const alertStore = useAlertStore()
 const roomsStore = useRoomsStore()
 const socket = authStore.socket
 const adminSocket = authStore.adminSocket
@@ -17,7 +17,10 @@ onMounted(() => {
     socket.on("rooms", ({ data, errors }) => {
         if (errors) {
             for (const error of errors) {
-                alertStore.error(error.message)
+                toast.error(error.message, {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                    autoClose: 3000,
+                });
             }
 
             return;

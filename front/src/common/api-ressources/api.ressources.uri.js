@@ -3,6 +3,7 @@ import environment from '../../environments/environment'
 const BASE_URI = `${environment.API_BASE_URL}`
 export const ROOMS_URI = `${BASE_URI}/rooms`
 export const CUSTOMERS_URI = `${BASE_URI}/users`
+export const NOTIFICATION_URI = `${BASE_URI}/notification`
 
 export const API_RESSOURCE_URI = {
     USER_REGISTER: `${BASE_URI}/register`,
