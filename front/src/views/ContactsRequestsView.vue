@@ -1,7 +1,6 @@
 <script setup>
 import SideBarAdmin from '@/components/SideBarAdmin.vue'
-import ConversationsRequestList from '@/components/ConversationsRequestList.vue'
-</script>
+import ContactsRequestList from '@/components/ContactsRequestList.vue'</script>
 
 <template>
     <main>
@@ -12,7 +11,7 @@ import ConversationsRequestList from '@/components/ConversationsRequestList.vue'
             <div class="col-span-10 flex flex-col w-full p-5">
                 <h1 class='text-3xl text-white'>Demandes de contact</h1>
                 <Suspense>
-                    <ConversationsRequestList/>
+                    <ContactsRequestList/>
                 </Suspense>
             </div>
         </div>

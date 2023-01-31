@@ -1,5 +1,4 @@
 const Room = require('../../../models/Room')
-
 const roomsEvents = (socket, io) => {
     async function createRoom(room) {
         const { name, description, limit } = room

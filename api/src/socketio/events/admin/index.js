@@ -2,6 +2,7 @@ const verifyToken = require('../../middlewares/verifyToken')
 const adminRight = require('../../middlewares/adminRight')
 const roomsEvents = require('./rooms.events')
 const { User } = require('../../../models')
+const contactsEvents = require('./contacts.events')
 
 const initAdminEvents = (io) => {
     const admin = io.of('/admin')
@@ -21,6 +22,7 @@ const initAdminEvents = (io) => {
             io.of('/').emit('admin:online', { data: { userId } })
         }
 
+        contactsEvents(socket, io)
         roomsEvents(socket, io)
 
         const onDisconnect = async () => {

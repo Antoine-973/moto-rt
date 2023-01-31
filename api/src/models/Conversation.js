@@ -18,6 +18,15 @@ Conversation.init(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        endedAt: {
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
+        isWithAdvisor: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
+        }
     },
     {
         sequelize: connection,

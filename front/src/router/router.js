@@ -10,7 +10,7 @@ import RoomView from '@/views/RoomView.vue'
 import ConversationView from '@/views/ConversationView.vue'
 import ConversationsView from '@/views/ConversationsView.vue'
 import NotificationView from '@/views/NotificationView.vue'
-import ConversationsRequestsView from '@/views/ConversationsRequestsView.vue'
+import ContactsRequestsView from '@/views/ContactsRequestsView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,7 +49,7 @@ const router = createRouter({
             path: '/conversations/requests/',
             name: 'ConversationRequestsView',
             meta: { role: 'ROLE_CONSEILLER' },
-            component: ConversationsRequestsView,
+            component: ContactsRequestsView,
         },
         {
             path: '/conversations',

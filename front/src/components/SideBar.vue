@@ -18,7 +18,7 @@ const authStore = useAuthStore()
                 </div>
             </div>
             <div class='pt-1 pb-5 text-lg font-bold'>{{user.username}}</div>
-            <router-link class="btn w-full bg-gray-900 border-0" to='/'>Demande de communication</router-link>
+            <router-link class="btn w-full bg-gray-900 border-0 rounded-none" to='/dashboard'>Tableau de bord</router-link>
             <router-link class="btn w-full bg-gray-900 border-0" to='/rooms'>Salons de discussions</router-link>
             <router-link class="btn w-full bg-gray-900 border-0" to='/conversations'>Mes conversations</router-link>
             <button class="btn btn-error w-full rounded-none border-0 text-white" @click="authStore.logout">Déconnexion</button>

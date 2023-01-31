@@ -5,6 +5,7 @@ exports.ResetPasswordRequest = require('./ResetPasswordRequest')
 exports.Room = require('./Room')
 exports.Conversation = require('./Conversation')
 exports.Message = require('./Message')
+exports.Contact = require('./Contact')
 
 exports.Room.hasMany(exports.Message, { foreignKey: 'roomId', onDelete: 'CASCADE', hooks: true })
 exports.Message.belongsTo(exports.Room, { foreignKey: 'roomId' })
@@ -28,3 +29,5 @@ exports.Room.belongsToMany(exports.User, {
     foreignKey: 'roomId',
     onDelete: 'CASCADE'
 })
+exports.Contact.belongsTo(exports.User, { foreignKey: 'userId', as:"user" })
+exports.User.hasMany(exports.Contact, { foreignKey: 'userId', as:"contactRequests" })

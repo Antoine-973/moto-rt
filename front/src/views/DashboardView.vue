@@ -12,19 +12,18 @@ const authStore = useAuthStore()
 const user = authStore.user;
 const isAdmin = user.role === 'ROLE_ADMIN';
 const conversationStore = useConversationsStore();
-const socket = user.socket;
+const socket = authStore.socket;
 const router = useRouter();
 
 onMounted(() => {
-    socket.on("contact:created", ({ errors }) => {
+    socket.on("contactRequest:created", ({ errors }) => {
         if (errors) {
             for (const error of errors) {
                 toast.error(error.message, {
                     position: toast.POSITION.BOTTOM_LEFT,
                     autoClose: 3000,
-                });
+                }); 
             }
-
             return;
         }
 
@@ -34,7 +33,7 @@ onMounted(() => {
         });
     });
 
-    socket.on("contact:pending", ({ errors }) => {
+    socket.on("contactRequest:pending", ({ errors }) => {
         if (errors) {
             for (const error of errors) {
                 toast.error(error.message, {
@@ -49,7 +48,7 @@ onMounted(() => {
         toast.info("Vous êtes déjà en attente d'un conseiller");
     });
 
-    socket.on("contact:accepted", ({ data, errors }) => {
+    socket.on("contactRequest:accepted", ({ data, errors }) => {
         if (errors) {
             for (const error of errors) {
                 toast.error(error.message, {
@@ -75,7 +74,7 @@ onMounted(() => {
         conversationStore.setConversation(data.conversation);
     });
 
-    socket.on("contact:refused", ({ errors }) => {
+    socket.on("contactRequest:refused", ({ errors }) => {
         if (errors) {
             for (const error of errors) {
                 toast.error(error.message);
@@ -84,20 +83,20 @@ onMounted(() => {
             return;
         }
 
-        toast.warning("Aucun conseiller ne peut vous contacter pour le moment");
+        toast.warning("Aucun conseiller ne peut vous contactRequester pour le moment");
     });
 });
 
 onUnmounted(() => {
     socket.off("conversations");
-    socket.off("contact:created");
-    socket.off("contact:pending");
-    socket.off("contact:accepted");
-    socket.off("contact:refused");
+    socket.off("contactRequest:created");
+    socket.off("contactRequest:pending");
+    socket.off("contactRequest:accepted");
+    socket.off("contactRequest:refused");
 });
 
 const conversationRequest =() => {
-    socket.emit("contact:create");
+    socket.emit("contactRequest:create");
 }
 
 </script>
@@ -114,7 +113,7 @@ const conversationRequest =() => {
                 <div>
                     <h2 class='text-xl text-white'>Bonjour {{ user.username }} vous avez demandez notre aide.</h2>
                     <h3 class='text-lg text-white'>Vous vous trouvez dans notre nouveau système de support client via échange instantané.</h3>
-                    <p>Soyez mis en contact avec un conseiller en cliquant ici :</p>
+                    <p>Soyez mis en contactRequest avec un conseiller en cliquant ici :</p>
                     <button v-if="user.role !== 'ROLE_ADMIN'" class='btn btn-primary' @click="conversationRequest">Contacter un conseiller</button>
                     <p>Discuter avec les autres clients :</p>
                     <router-link to='/conversations' class='btn btn-primary'>Discuter par message privé</router-link>
