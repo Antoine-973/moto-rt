@@ -1,12 +1,12 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from 'vue'
 import { useConversationsStore } from '@/stores/conversations.store'
-import { useAlertStore, useAuthStore } from '@/stores'
+import { useAuthStore } from '@/stores'
+import { toast } from 'vue3-toastify'
 
 const conversationsStore = useConversationsStore();
 const authStore = useAuthStore();
 const socket = authStore.socket
-const alertStore = useAlertStore();
 const conversations = computed(() => Object.values(conversationsStore.conversations));
 
 onMounted(() => {
@@ -15,7 +15,10 @@ onMounted(() => {
     socket.on("conversations", ({ data, errors }) => {
         if (errors) {
             for (const error of errors) {
-                alertStore.error(error.message)
+                toast.error(error.message, {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                    autoClose: 3000,
+                });
             }
 
             return;

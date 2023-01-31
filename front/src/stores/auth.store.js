@@ -6,6 +6,7 @@ import router from '@/router/router'
 import { ref, watch } from 'vue'
 import { io } from 'socket.io-client'
 import environment from '../environments/environment'
+import { toast } from 'vue3-toastify'
 
 export const useAuthStore = defineStore('auth', () => {
     const tokenInLocalStorage = localStorage.getItem('token') || null
@@ -15,6 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
     const socket = ref(null)
     const adminSocket = ref(null)
     const loggedIn = ref(!!tokenInLocalStorage || false)
+    const eventSource = ref(null)
 
     watch(user, (newUser) => {
         if (newUser) {
@@ -26,10 +28,36 @@ export const useAuthStore = defineStore('auth', () => {
                     auth: { token: token.value },
                 })
             }
+            if (newUser.role !== 'ROLE_ADMIN') {
+                eventSource.value = new EventSource(
+                    `${environment.API_BASE_URL}/sse`,
+                    { withCredentials: true }
+                )
+            }
         } else {
             socket.value.disconnect()
             adminSocket.value.disconnect()
+            eventSource.value.close()
         }
+    })
+
+    const displayNotification = (event) => {
+        if (!event.data) return
+
+        const data = JSON.parse(event.data)
+
+        if (!data.message) return
+
+        toast.info(data.message, {
+            position: toast.POSITION.BOTTOM_LEFT,
+            autoClose: 3000,
+        })
+    }
+
+    watch(eventSource, (event) => {
+        if (!event) return
+
+        event.addEventListener('notification', displayNotification)
     })
 
     const me = async () => {

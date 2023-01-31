@@ -9,6 +9,7 @@ import RoomsView from '../views/RoomsView.vue'
 import RoomView from '@/views/RoomView.vue'
 import ConversationView from '@/views/ConversationView.vue'
 import ConversationsView from '@/views/ConversationsView.vue'
+import NotificationView from '@/views/NotificationView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,6 +37,12 @@ const router = createRouter({
             name: 'DashboardView',
             meta: { role: 'ROLE_USER' },
             component: DashboardView,
+        },
+        {
+            path: '/notification',
+            name: 'NotificationView.vue',
+            meta: { role: 'ROLE_ADMIN' },
+            component: NotificationView,
         },
         {
             path: '/conversations',
