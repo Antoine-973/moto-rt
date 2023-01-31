@@ -61,7 +61,6 @@ const roomsEvents = (socket, io) => {
     }
 
     const onRooms = async () => {
-        console.log('[socket.io]: rooms')
         const rooms = await Room.findAll()
 
         socket.emit('rooms', { data: { rooms } })

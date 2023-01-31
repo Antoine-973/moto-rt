@@ -31,6 +31,13 @@ Message.init(
         sequelize: connection,
         modelName: 'message',
         paranoid: true,
+        defaultScope: {
+            attributes: {
+                exclude: ['deletedAt'],
+                include: "userId",
+                order: [['createdAt', 'DESC']],
+            }
+        }
     }
 )
 

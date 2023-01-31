@@ -1,61 +1,25 @@
-import { defineStore } from 'pinia';
-import CustomersService from '@/services/customers.service'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-export const useCustomersStore = defineStore({
-    id: 'customers',
-    state: () => ({
-        customers: [],
-        currentCustomer: null,
+export const useCustomersStore = defineStore('customers', () => {
+    const customers = ref({})
+
+    const updateCustomers = (newCustomers) => {
+        customers.value = newCustomers.reduce((accumulator, customer) => {
+            const existingCustomer = accumulator[customer.id]
+
+            if (existingCustomer) {
+                accumulator[customer.id] = { ...existingCustomer, ...customer }
+            } else {
+                accumulator[customer.id] = { messages: [], users: [], ...customer }
+            }
+
+            return accumulator
+        }, customers.value)
     }
-    ),
-    actions: {
-        async getCustomers() {
-            return CustomersService.getCustomers().then(
-                (response) => {
-                    this.customers = response
-                    return Promise.resolve(response)
-                },
-                (error) => {
-                    return Promise.reject(error)
-                }
-            )
-        },
-        async getCustomer(id) {
-            return CustomersService.getCustomer(id).then(
-                (response) => {
-                    this.currentCustomer = response.data
-                    return Promise.resolve(response.data)
-                },
-                (error) => {
-                    return Promise.reject(error)
-                }
-            )
-        },
-        async createCustomer(customer) {
-            return CustomersService.createCustomer(customer).then(
-                (response) => {
-                    this.customers.push(response.data)
-                    return Promise.resolve(response.data)
-                }
-            )
-        },
-        async updateCustomer(customer) {
-            return CustomersService.updateCustomer(customer).then(
-                (response) => {
-                    const index = this.customers.findIndex((r) => r.id === customer.id)
-                    this.customers[index] = response.data
-                    return Promise.resolve(response.data)
-                }
-            )
-        },
-        async deleteCustomer(id) {
-            return CustomersService.deleteCustomer(id).then(
-                (response) => {
-                    const index = this.customers.findIndex((r) => r.id === id)
-                    this.customers.splice(index, 1)
-                    return Promise.resolve(response.data)
-                }
-            )
-        }
+
+    return {
+        customers,
+        updateCustomers,
     }
-});
+})

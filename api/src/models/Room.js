@@ -13,7 +13,7 @@ Room.init(
         name: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true,
+            unique: false,
             validate: {
                 len: {
                     args: [2, 50],
@@ -59,7 +59,10 @@ Room.init(
                 include: {
                     association: 'messages',
                     order: [['createdAt', 'DESC']],
-                }
+                    attributes: {
+                        exclude: ['deletedAt', 'updatedAt'],
+                    },
+                },
             }
         }
     }

@@ -7,7 +7,8 @@ import ConfirmAccountView from '../views/ConfirmAccountView.vue'
 import { useAuthStore } from '@/stores'
 import RoomsView from '../views/RoomsView.vue'
 import RoomView from '@/views/RoomView.vue'
-import CustomersView from '@/views/CustomersView.vue'
+import ConversationView from '@/views/ConversationView.vue'
+import ConversationsView from '@/views/ConversationsView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,10 +38,16 @@ const router = createRouter({
             component: DashboardView,
         },
         {
-            path: '/users',
-            name: 'CustomersView',
+            path: '/conversations',
+            name: 'ConversationsView',
             meta: { role: 'ROLE_USER' },
-            component: CustomersView,
+            component: ConversationsView,
+        },
+        {
+            path: '/conversations/:id',
+            name: 'ConversationView',
+            meta: { role: 'ROLE_USER' },
+            component: ConversationView,
         },
         {
             path: '/rooms',
