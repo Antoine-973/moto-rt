@@ -26,7 +26,7 @@ const schema = Yup.object().shape({
 function onSubmit(values, { setErrors }) {
     const { email, password } = values;
     return authStore.login(email, password)
-        .then(() => router.push({ name: 'HomeView' }))
+        .then(() => router.back())
         .catch(error => setErrors({ apiError: error.response.data.message }));
 }
 </script>

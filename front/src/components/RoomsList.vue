@@ -48,7 +48,7 @@ const deleteRoom = (roomId) => {
             </div>
             <div class='mt-5 flex justify-between'>
                 <div v-if='user.role === "ROLE_ADMIN"'>
-                    <EditRoomModal/>
+                    <EditRoomModal :initial-room="room"/>
                 </div>
                 <div v-if='user.role === "ROLE_ADMIN"'>
                     <button class='btn btn-error' @click='deleteRoom(room.id)'>Supprimer</button>

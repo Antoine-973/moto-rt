@@ -27,14 +27,42 @@ Conversation.init(
             attributes: { exclude: ['deletedAt', 'updatedAt'] },
             include: ['sender', 'receiver'],
         },
+        scopes: {
+            conversationWithMessages: {
+                attributes: { exclude: ['deletedAt', 'updatedAt'] },
+                include: ['sender', 'receiver', 'messages'],
+            },
+        },
     }
 )
 
-Conversation.addScope('withMessages', {
-    attributes: {
-        exclude: ['deletedAt', 'updatedAt'],
-    },
-    include: ['sender', 'receiver', 'messages'],
-})
+Conversation.seed = async () => {
+    await Conversation.bulkCreate([
+        {
+            senderId: 2,
+            receiverId: 3,
+        },
+        {
+            senderId: 2,
+            receiverId: 4,
+        },
+        {
+            senderId: 2,
+            receiverId: 5,
+        },
+        {
+            senderId: 3,
+            receiverId: 4,
+        },
+        {
+            senderId: 3,
+            receiverId: 5,
+        },
+        {
+            senderId: 4,
+            receiverId: 5,
+        },
+    ])
+}
 
 module.exports = Conversation

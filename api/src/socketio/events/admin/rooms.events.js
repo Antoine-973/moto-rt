@@ -10,9 +10,9 @@ const roomsEvents = (socket, io) => {
             limit,
         })
 
-        io.emit('roomCreated', newRoom)
+        io.emit('room:created', newRoom)
 
-        io.of('/').emit('roomCreated', newRoom)
+        io.of('/').emit('room:created', newRoom)
     }
 
     async function updateRoom(room) {
@@ -31,9 +31,9 @@ const roomsEvents = (socket, io) => {
             }
         )
 
-        io.emit('roomUpdated', updatedRoom)
+        io.emit('room:updated', updatedRoom)
 
-        io.of('/').emit('roomUpdated', updatedRoom)
+        io.of('/').emit('room:updated', updatedRoom)
     }
 
     async function deleteRoom(id) {
@@ -41,11 +41,11 @@ const roomsEvents = (socket, io) => {
             where: {
                 id,
             },
-        }).then(() => {
-            io.emit('roomDeleted', deletedRoom)
-
-            io.of('/').emit('roomDeleted', deletedRoom)
         })
+
+        io.emit('room:deleted', deletedRoom)
+
+        io.of('/').emit('room:deleted', deletedRoom)
     }
 
     async function restoreRoom(id) {
@@ -55,15 +55,15 @@ const roomsEvents = (socket, io) => {
             },
         })
 
-        io.emit('roomRestored', restoredRoom)
+        io.emit('room:restored', restoredRoom)
 
-        io.of('/').emit('roomRestored', restoredRoom)
+        io.of('/').emit('room:restored', restoredRoom)
     }
 
-    socket.on('createRoom', createRoom)
-    socket.on('updateRoom', updateRoom)
-    socket.on('deleteRoom', deleteRoom)
-    socket.on('restoreRoom', restoreRoom)
+    socket.on('room:create', createRoom)
+    socket.on('room:update', updateRoom)
+    socket.on('room:delete', deleteRoom)
+    socket.on('room:restore', restoreRoom)
 }
 
 module.exports = roomsEvents

@@ -2,11 +2,10 @@
 import { Field, Form } from 'vee-validate'
 import * as Yup from 'yup'
 
-import { useAlertStore } from '../stores'
-import { useRouter } from 'vue-router'
-import RoomsService from '@/services/rooms.service'
+import { useAuthStore } from '@/stores'
 
-const router = useRouter();
+const authStore = useAuthStore();
+const adminSocket = authStore.adminSocket;
 
     const schema = Yup.object().shape({
         name: Yup.string()
@@ -21,31 +20,19 @@ const router = useRouter();
             .max(255, 'La description de la salle ne doit pas dépasser 255 caractères')
     });
 
-    const createRoom = async (room) => {
-        return RoomsService.createRoom(room).then((response) => {
-            return response.data;
-        })
-    }
-
-    async function onSubmit(values, { setErrors } ) {
-        const alertStore = useAlertStore();
-        createRoom(values).then(async () => {
-            await router.push('/rooms').then(() => {
-                alertStore.success("Salle créée avec succès !");
-            }
-            );
-        }).catch(error => setErrors({ apiError: error.response.data.message }));
+    const createRoom = (room) => {
+        adminSocket.emit("room:create", room);
     }
 </script>
 
 <template>
-    <label for="my-modal-4" class="btn w-full h-full">Créer une salle</label>
+    <label for="new-room-modal" class="btn w-full h-full">Créer une salle</label>
 
-    <input id="my-modal-4" type="checkbox" class="modal-toggle" />
-    <label for="my-modal-4" class="modal cursor-pointer">
+    <input id="new-room-modal" type="checkbox" class="modal-toggle" />
+    <label for="new-room-modal" class="modal cursor-pointer">
         <label class="modal-box relative flex flex-col items-center" for="">
             <h2 class="card-title">Création d'une salle de discussion</h2>
-            <Form v-slot="{ errors, isSubmitting }" :validation-schema="schema" @submit="onSubmit">
+            <Form v-slot="{ errors, isSubmitting }" :validation-schema="schema" @submit="createRoom">
                 <div class='flex flex-col gap-2'>
                     <div class="form-control w-full max-w-xs">
                         <label class='label'><span class="label-text">Nom de la salle</span></label>

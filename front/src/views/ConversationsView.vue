@@ -3,7 +3,7 @@
 import SideBar from '../components/SideBar.vue'
 import { useAuthStore } from '@/stores'
 import SideBarAdmin from '@/components/SideBarAdmin.vue'
-import CustomersList from '@/components/CustomersList.vue'
+import ConversationsList from '@/components/ConversationsList.vue'
 
 const authStore = useAuthStore()
 const user = authStore.user;
@@ -19,9 +19,9 @@ const isAdmin = user.role === 'ROLE_ADMIN';
                 <SideBarAdmin v-else/>
             </div>
             <div class="col-span-10 flex flex-col w-full p-5">
-                <h1 class='text-3xl text-white'>Liste des clients</h1>
+                <h1 class='text-3xl text-white'>Conversations</h1>
                 <Suspense>
-                    <CustomersList/>
+                    <ConversationsList/>
                 </Suspense>
             </div>
         </div>

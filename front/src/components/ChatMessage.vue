@@ -16,9 +16,15 @@ const myMessage = user.id === message.message.userId
 
 <template>
     <div v-if='!myMessage' class="chat chat-start">
+        <div class="chat-header">
+            <time class="text-xs opacity-50">{{ new Date(message.message.createdAt).toLocaleTimeString() }}</time>
+        </div>
         <div class="chat-bubble">{{message.message.text}}</div>
     </div>
     <div v-else class="chat chat-end">
-        <div class="chat-bubble chat-bubble-primary">{{message.message.text}}</div>
+        <div class="chat-header">
+            <time class="text-xs opacity-50">{{ new Date(message.message.createdAt).toLocaleTimeString() }}</time>
+        </div>
+        <div class="chat-bubble">{{message.message.text}}</div>
     </div>
 </template>
