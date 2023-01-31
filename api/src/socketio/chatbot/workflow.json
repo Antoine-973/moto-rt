@@ -1,0 +1,259 @@
+{
+    "root": {
+      "name": "Point de départ",
+      "description": "Point de départ de la conversation",
+      "message": "Définissez votre demande",
+      "last": false,
+      "choices": [
+        {
+          "id": "vehicle_maintenance",
+          "name": "Entretien du véhicule"
+        },
+        {
+          "id": "vehicle_information",
+          "name": "Informations sur le véhicule"
+        },
+        {
+          "id": "contact_information",
+          "name": "Informations de contact"
+        },
+        {
+          "id": "stop",
+          "name": "Arrêter la conversation"
+        }
+      ]
+    },
+    "vehicle_maintenance":{
+      "name": "Entretien du véhicule",
+      "description": "Permet de demander des informations sur l'entretien du véhicule",
+      "message": "Quel est l'année de votre véhicule ?",
+      "last": false,
+      "ask": {
+        "next": "vehicle_maintenance_last_date",
+        "type": "number"
+      }
+    },
+    "vehicle_maintenance_last_date": {
+      "name": "Date du dernier entretien",
+      "description": "Permet de demander la date du dernier entretien",
+      "message": "Quelle est la date du dernier entretien ?",
+      "last": false,
+      "choices": [
+        {
+          "id": "vehicle_maintenance_last_date_gt_1_year",
+          "name": "Plus d'un an"
+        },
+        {
+          "id": "vehicle_maintenance_last_date_lt_1_year",
+          "name": "Moins d'un an"
+        }
+      ]
+    },
+    "vehicle_maintenance_last_date_gt_1_year": {
+      "name": "Date du dernier entretien",
+      "description": "Permet de demander la date du dernier entretien",
+      "message": "Prenez rendez-vous pour l'entretien de votre véhicule",
+      "last": false,
+      "ask": {
+        "save": "vehicle_maintenance_last_date_gt_1_year_save",
+        "appointment": "normal",
+        "type": "date",
+        "choices": null
+      }
+    },
+    "vehicle_maintenance_last_date_gt_1_year_save": {
+      "name": "Sauvegarde la date de rendez-vous pour l'entretien",
+      "description": "Permet de sauvegarder la date de rendez-vous pour l'entretien",
+      "message": "Votre rendez-vous a bien été pris en compte",
+      "last": true,
+      "save": true
+    },
+    "vehicle_maintenance_last_date_lt_1_year": {
+      "name": "Nombre de kilomètres parcourus",
+      "description": "Permet de demander le nombre de kilomètres parcourus",
+      "message": "Combien de kilomètres avez-vous parcourus depuis le dernier entretien ?",
+      "last": false,
+      "choices": [
+        {
+          "id": "vehicle_maintenance_km_gte_10000",
+          "name": "Plus de 10 000 km"
+        },
+        {
+          "id": "vehicle_maintenance_km_lte_10000",
+          "name": "Moins de 10 000 km"
+        }
+      ]
+    },
+    "vehicle_maintenance_km_gte_10000": {
+      "name": "Nombre de kilomètres parcourus supérieur ou égal à 10000",
+      "description": "Permet de proposer un rendez-vous pour l'entretien",
+      "message": "Prenez rendez-vous pour l'entretien de votre véhicule",
+      "last": false,
+      "ask": {
+        "save": "vehicle_maintenance_km_gte_10000_save",
+        "appointment": "normal",
+        "type": "date",
+        "choices": null
+      }
+    },
+    "vehicle_maintenance_km_gte_10000_save": {
+      "name": "Sauvegarde la date de rendez-vous pour l'entretien",
+      "description": "Permet de sauvegarder la date de rendez-vous pour l'entretien",
+      "message": "Votre rendez-vous a bien été pris en compte",
+      "last": true,
+      "save": true
+    },
+    "vehicle_maintenance_km_lte_10000": {
+      "name": "Demander si le client souhaite réviser son véhicule",
+      "description": "Permet de demander si le client souhaite réviser son véhicule",
+      "message": "Souhaitez-vous réviser votre véhicule ?",
+      "last": false,
+      "choices": [
+        {
+          "id": "vehicle_maintenance_km_lte_10000_appointment",
+          "name": "Oui"
+        },
+        {
+          "id": "stop",
+          "name": "Non"
+        }
+      ]
+    },
+    "vehicle_maintenance_km_lte_10000_appointment": {
+      "name": "Proposer un rendez-vous pour l'entretien",
+      "description": "Permet de proposer un rendez-vous pour l'entretien",
+      "message": "Prenez rendez-vous pour l'entretien de votre véhicule",
+      "last": false,
+      "ask": {
+        "save": "vehicle_maintenance_km_lte_10000_appointment_save",
+        "appointment": "normal",
+        "type": "date",
+        "choices": null
+      }
+    },
+    "vehicle_maintenance_km_lte_10000_appointment_save": {
+      "name": "Sauvegarde la date de rendez-vous pour l'entretien",
+      "description": "Permet de sauvegarder la date de rendez-vous pour l'entretien",
+      "message": "Votre rendez-vous a bien été pris en compte",
+      "last": true,
+      "save": true
+    },
+    "vehicle_information": {
+      "name": "Informations sur le véhicule",
+      "description": "Permet d'obtenir des informations sur le véhicule",
+      "last": false,
+      "message": "Quelle est le type d'usage du véhicule ?",
+      "choices": [
+        {
+          "id": "vehicle_information_usage_type_road",
+          "name": "Usage routier"
+        },
+        {
+          "id": "vehicle_information_usage_type_off_road",
+          "name": "Usage hors route"
+        },
+        {
+          "id": "vehicle_information_usage_type_sporty",
+          "name": "Usage sportif"
+        }
+      ]
+    },
+    "vehicle_information_usage_type_road": {
+      "name": "Information si le client a un usage routier",
+      "description": "Permet d'obtenir des informations sur le véhicule si le client a un usage routier",
+      "message": "Prenez rendez-vous avec un conseiller pour un essai routier",
+      "last": false,
+      "ask": {
+        "save": "vehicle_information_usage_type_road_save",
+        "appointment": "road",
+        "type": "date",
+        "choices": null
+      }
+    },
+    "vehicle_information_usage_type_road_save": {
+      "name": "Sauvegarde du rendez-vous choisi par le client",
+      "description": "Permet de sauvegarder le rendez-vous choisi par le client",
+      "message": "Votre rendez-vous a bien été pris en compte",
+      "last": true,
+      "save": true
+    },
+    "vehicle_information_usage_type_off_road": {
+      "name": "Information si le client a un usage tout-terrain",
+      "description": "Permet d'obtenir des informations sur le véhicule si le client a un usage tout-terrain",
+      "message": "Prenez rendez-vous avec un conseiller pour un essai tout-terrain",
+      "last": false,
+      "ask": {
+        "save": "vehicle_information_usage_type_off_road_save",
+        "appointment": "offroad",
+        "type": "date",
+        "choices": null
+      }
+    },
+    "vehicle_information_usage_type_off_road_save": {
+      "name": "Sauvegarde du rendez-vous choisi par le client",
+      "description": "Permet de sauvegarder le rendez-vous choisi par le client",
+      "message": "Votre rendez-vous a bien été pris en compte",
+      "last": true,
+      "save": true
+    },
+    "vehicle_information_usage_type_sporty": {
+      "name": "Information si le client a un usage sportif",
+      "description": "Permet d'obtenir des informations sur le véhicule si le client a un usage sportif",
+      "message": "Prenez rendez-vous avec un conseiller pour un essai sportif",
+      "last": false,
+      "ask": {
+        "save": "vehicle_information_usage_type_sporty_save",
+        "appointment": "sporty",
+        "type": "date",
+        "choices": null
+      }
+    },
+    "vehicle_information_usage_type_sporty_save": {
+      "name": "Sauvegarde du rendez-vous choisi par le client",
+      "description": "Permet de sauvegarder le rendez-vous choisi par le client",
+      "message": "Votre rendez-vous a bien été pris en compte",
+      "last": true,
+      "save": true
+    },
+    "contact_information": {
+      "name": "Informations de contact",
+      "description": "Permet d'obtenir les informations de contact",
+      "message": "Quelle information souhaitez-vous obtenir ?",
+      "last": false,
+      "choices": [
+        {
+          "id": "contact_information_email",
+          "name": "Email"
+        },
+        {
+          "id": "contact_information_phone",
+          "name": "Téléphone"
+        }
+      ]
+    },
+    "contact_information_email": {
+      "name": "Informations de contact - Email",
+      "description": "Permet d'obtenir l'email de contact",
+      "message": "L'email de contact est : contact@ghost-riders.fr",
+      "last": true,
+      "choices": null
+    },
+    "contact_information_phone": {
+      "name": "Informations de contact - Téléphone",
+      "description": "Permet d'obtenir le numéro de téléphone de contact",
+      "message": "Le numéro de téléphone de contact est : 01 23 45 67 89",
+      "last": true,
+      "choices": null
+    },
+    "stop": {
+      "name": "Stop",
+      "description": "Permet d'arrêter la conversation",
+      "message": "La conversation est terminée",
+      "last": true,
+      "choices": null
+    }
+  }
+  
+  
+  
+  
