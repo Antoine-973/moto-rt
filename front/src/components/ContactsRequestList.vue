@@ -106,7 +106,6 @@ const onRefuseContact = (contactsId) => {
             <table class="table w-full">
                 <thead>
                 <tr>
-                    <th></th>
                     <th>Nom d'utilisateur</th>
                     <th>Email</th>
                     <th>Status</th>
